@@ -1,18 +1,21 @@
 #include "EngineManager.h"
-#include "IGameStateManager.h"
+
+#include <iostream>
+
+#include "IGameManager.h"
 
 EngineManager::EngineManager(std::unique_ptr<IWindowManager> windowManager,
-                             std::unique_ptr<IGameStateManager> gameStateManager,
-                             std::unique_ptr<FPSManager> fpsManager) :
-    m_windowManager(std::move(windowManager)),
-    m_gameStateManager(std::move(gameStateManager)),
-    m_fpsManager(std::move(fpsManager)),
-    m_isRunning(false) {
-}
+                                 std::unique_ptr<IGameManager> gameManager,
+                                 std::unique_ptr<FPSManager> fpsManager) :
+        m_windowManager(std::move(windowManager)),
+        m_gameManager(std::move(gameManager)),
+        m_fpsManager(std::move(fpsManager)),
+        m_isRunning(false) {
+    }
 
-EngineManager::~EngineManager() {
-    cleanup();
-}
+// EngineManager::~EngineManager() {
+//     cleanup();
+// }
 
 void EngineManager::start() {
     if (m_windowManager) {
@@ -23,24 +26,26 @@ void EngineManager::start() {
     run();
 }
 
-void EngineManager::input() {
-    if (m_gameStateManager) {
-        m_gameStateManager->input();
+void EngineManager::input() const {
+    if (m_gameManager) {
+        m_gameManager->input();
     }
 }
 
-void EngineManager::cleanup() {
-    if (m_gameStateManager) {
-        m_gameStateManager->cleanup();
-    }
+void EngineManager::cleanup() const {
+    std::cout << "EngineManager: cleanup" << std::endl;
 
-    if (m_windowManager) {
-        m_windowManager->cleanup();
-    }
+     if (m_gameManager) {
+         m_gameManager->cleanup();
+     }
 
-    if (m_fpsManager) {
-        m_fpsManager->cleanup();
-    }
+     if (m_windowManager) {
+         m_windowManager->cleanup();
+     }
+
+     if (m_fpsManager) {
+         m_fpsManager->cleanup();
+     }
 }
 
 void EngineManager::run() {
@@ -48,8 +53,9 @@ void EngineManager::run() {
         if (m_fpsManager->shouldRender()) {
             m_windowManager->update();
 
-            m_gameStateManager->input();
-            m_gameStateManager->render();
+            m_gameManager->input();
+            m_gameManager->render();
+            m_isRunning = !m_gameManager->shouldExist();
         }
     }
     cleanup();

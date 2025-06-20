@@ -1,45 +1,42 @@
 #include <iostream>
-#include "8puzzle/core/Tabuleiro.h"
-#include <platform/EngineManager.h>
+
+#include "8puzzle/core/Board.h"
+#include "platform/EngineManager.h"
+#include "platform/FPSManager.h"
+
 #include <platform/IWindowManager.h>
-#include <platform/terminal/WindowManager.h>
-#include <platform/terminal/TerminalGameStateManager.h>
-#include <platform/terminal/MenuGameObject.h>
-#include <platform/IGameStateManager.h>
-#include <8puzzle/logic/views/ViewState.h>
-#include <8puzzle/logic/PuzzleGameManage.h>
-    
+
+#include "platform/domain/ApplicationGame.h"
+#include "platform/terminal/TerminalGameManager.h"
 
 using namespace std;
 
+class DummyWindowManager final : public IWindowManager {
+public:
+    void init() override { std::cout << "DummyWindowManager: Init" << std::endl; }
+    void update() override { /* std::cout << "DummyWindowManager: Update" << std::endl; */ }
+    void cleanup() override { std::cout << "DummyWindowManager: cleanup" << std::endl; }
+    ~DummyWindowManager() override = default;
+};
+
+
 int main()
 {
-    //std::unique_ptr<IWindowManager> windowManager = std::make_unique<WindowManager>();
-    //std::unique_ptr<IGameStateManager> gameStateManager = std::make_unique<TerminalGameStateManager>();
-    //std::unique_ptr<FPSManager> fpsManager = std::make_unique<FPSManager>(10);
-    // 
-    //std::unique_ptr<IGameObject> menuGameObject = std::make_unique<MenuGameObject>();
+    std::cout << "Iniciando o jogo..." << std::endl;
+    auto windowManager = std::make_unique<DummyWindowManager>();
+    auto fpsManager = std::make_unique<FPSManager>(2);
+    auto gameManager = std::make_unique<TerminalGameManager>();
 
-    ////gameStateManager->addGameObject(GameState::Menu, std::move(menuGameObject));
-    ////gameStateManager->addGameObject(GameState::Playing, NULL);
-    ////gameStateManager->addGameObject(GameState::GameOver, NULL);
+    const auto applicationGame = std::make_unique<ApplicationGame>();
 
-    ////gameStateManager->setCurrentState(GameState::Menu);
+    EngineManager engineManager(
+        std::move(windowManager),
+        std::move(gameManager),
+        std::move(fpsManager)
+    );
 
-    //EngineManager engineManager = EngineManager(
-    //    std::move(windowManager), 
-    //    NULL,
-    //    std::move(fpsManager));
+    engineManager.start();
 
-    //engineManager.start();
-
-
-
-    PuzzleGameManage puzzleGameManage = PuzzleGameManage();
-    
-    puzzleGameManage.getCurrentView();
-       
-
-
+    std::cout << "Jogo encerrado." << std::endl;
 	return 0;
 }

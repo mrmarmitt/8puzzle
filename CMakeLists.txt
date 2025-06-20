@@ -21,7 +21,11 @@ include_directories(src)
 # -----------------------------
 
 # Coleta os arquivos fonte do projeto
-file(GLOB_RECURSE PROJECT_SOURCES "src/*/*.cpp" "src/*/*.h")
+file(GLOB_RECURSE PROJECT_SOURCES
+        "src/8puzzle/*.cpp" "src/8puzzle/*.h"
+        "src/platform/*.cpp" "src/platform/*.h"
+        "src/platform/gamestate/*.cpp" "src/platform/gamestate/*.h"
+)
 
 # Cria uma biblioteca com o código principal
 add_library(core_lib ${PROJECT_SOURCES})
@@ -49,8 +53,7 @@ enable_testing()
 
 # Adiciona seus testes
 file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
-
-add_executable(RunTests ${TEST_SOURCES} "src/platform/FPSManager.cpp")
+add_executable(RunTests ${TEST_SOURCES})
 target_link_libraries(RunTests
   PRIVATE
     core_lib

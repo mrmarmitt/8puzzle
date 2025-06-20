@@ -1,54 +1,59 @@
+#include <string>
+#include <vector>
+
+#include "8puzzle/core/Board.h"
+#include "8puzzle/core/Tile.h"
 #include "gtest/gtest.h"
-#include "8puzzle/core/Tabuleiro.h"
-#include "8puzzle/core/Peca.h"
 
 // Cria um tabuleiro resolvido com 1-8 e 0 no final
-Tabuleiro criarTabuleiroResolvido() {
-    std::vector<Peca> pecas;
+Board criarTabuleiroResolvido() {
+    std::vector<Tile> pecas;
     for (int i = 1; i <= 8; ++i) {
         pecas.emplace_back(i, std::to_string(i));
     }
-    pecas.emplace_back(); // peça vazia (id = 0)
-    return Tabuleiro(pecas);
+    pecas.emplace_back(); // peï¿½a vazia (id = 0)
+    return Board(std::move(pecas));
 }
 
-// Cria tabuleiro com vazio no início
-Tabuleiro criarTabuleiroVazioInicio() {
-    std::vector<Peca> pecas;
+// Cria tabuleiro com vazio no inï¿½cio
+Board criarTabuleiroVazioInicio() {
+    std::vector<Tile> pecas;
     pecas.emplace_back(); // vazio
     for (int i = 1; i <= 8; ++i) {
         pecas.emplace_back(i, std::to_string(i));
     }
-    return Tabuleiro(pecas);
+    return Board(std::move(pecas));
 }
 
-// Teste se tabuleiro resolvido é reconhecido
+// Teste se tabuleiro resolvido ï¿½ reconhecido
 TEST(TabuleiroTest, TabuleiroResolvidoFinal) {
-    Tabuleiro tab = criarTabuleiroResolvido();
-    EXPECT_TRUE(tab.estaResolvido());
+    Board tab = criarTabuleiroResolvido();
+    EXPECT_TRUE(tab.isSolved());
 }
 
 TEST(TabuleiroTest, TabuleiroResolvidoInicio) {
-    Tabuleiro tab = criarTabuleiroVazioInicio();
-    EXPECT_TRUE(tab.estaResolvido());
+    Board tab = criarTabuleiroVazioInicio();
+    EXPECT_TRUE(tab.isSolved());
 }
 
-// Testa se peça é movida corretamente
+// Testa se peï¿½a ï¿½ movida corretamente
 TEST(TabuleiroTest, MovePecaValida) {
     // tabuleiro: 1 2 3 4 5 6 7 0 8 (vazio em [2][1])
-    std::vector<Peca> pecas = {
-        Peca(1, "1"), Peca(2, "2"), Peca(3, "3"),
-        Peca(4, "4"), Peca(5, "5"), Peca(6, "6"),
-        Peca(7, "7"), Peca(0, " "), Peca(8, "8")
+    std::vector<Tile> pecas = {
+        Tile(1, "1"), Tile(2, "2"), Tile(3, "3"),
+        Tile(4, "4"), Tile(5, "5"), Tile(6, "6"),
+        Tile(7, "7"), Tile(0, " "), Tile(8, "8")
     };
-    Tabuleiro tab(pecas);
-    EXPECT_TRUE(tab.moverPeca(8));
-    EXPECT_TRUE(tab.estaResolvido());
+
+    Board tab(std::move(pecas));
+
+    EXPECT_TRUE(tab.moveTile(8));
+    EXPECT_TRUE(tab.isSolved());
 }
 
-// Testa se movimento inválido não muda nada
+// Testa se movimento invï¿½lido nï¿½o muda nada
 TEST(TabuleiroTest, NaoMovePecaInvalida) {
-    Tabuleiro tab = criarTabuleiroResolvido();
-    EXPECT_FALSE(tab.moverPeca(1)); // 1 não está ao lado da peça vazia
-    EXPECT_TRUE(tab.estaResolvido()); // ainda está resolvido
+    Board tab = criarTabuleiroResolvido();
+    EXPECT_FALSE(tab.moveTile(1)); // 1 nï¿½o estï¿½ ao lado da peï¿½a vazia
+    EXPECT_TRUE(tab.isSolved()); // ainda estï¿½ resolvido
 }

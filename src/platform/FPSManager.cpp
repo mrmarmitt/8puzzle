@@ -1,5 +1,7 @@
 #include "FPSManager.h"
 
+#include <iostream>
+
 using namespace std::chrono;
 
 FPSManager::FPSManager(int targetFPS) :
@@ -8,10 +10,6 @@ FPSManager::FPSManager(int targetFPS) :
     lastFPSCheck(steady_clock::now()),
     frames(0),
     currentFPS(targetFPS) {
-}
-
-FPSManager::~FPSManager() {
-    cleanup();
 }
 
 bool FPSManager::shouldRender() {
@@ -41,5 +39,6 @@ int FPSManager::getCurrentFPS() const {
     return currentFPS;
 }
 
-void FPSManager::cleanup() {
+void FPSManager::cleanup() const {
+    std::cout << "FPSManager: cleanup" << std::endl;
 }
