@@ -9,6 +9,8 @@ include(FetchContent)
 if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
+  #TODO: Adicionar a lib libwinpthread-1.dll
 endif()
 
 project ("8Puzzle")
@@ -24,18 +26,22 @@ include_directories(src)
 file(GLOB_RECURSE PROJECT_SOURCES
         "src/8puzzle/*.cpp" "src/8puzzle/*.h"
         "src/platform/*.cpp" "src/platform/*.h"
-        "src/platform/gamestate/*.cpp" "src/platform/gamestate/*.h"
+        "src/platform/domain/*.cpp" "src/platform/domain/*.h"
+        "src/platform/domain/state/*.cpp" "src/platform/domain/state/*.h"
 )
 
 # Cria uma biblioteca com o código principal
 add_library(core_lib ${PROJECT_SOURCES})
 target_include_directories(core_lib PUBLIC src)
 
-# -----------------------------
-# Executável principal
-# -----------------------------
-add_executable(8Puzzle src/Main.cpp)
-target_link_libraries(8Puzzle PRIVATE core_lib)
+# -------------------------
+# FTXUI
+# -------------------------
+FetchContent_Declare(ftxui
+        GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui
+        GIT_TAG v6.1.9
+)
+FetchContent_MakeAvailable(ftxui)
 
 # -------------------------
 # GoogleTest
@@ -47,6 +53,19 @@ FetchContent_Declare(
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
+
+
+# -----------------------------
+# Executável principal
+# -----------------------------
+add_executable(8Puzzle src/main.cpp)
+target_link_libraries(8Puzzle
+  PRIVATE
+    core_lib
+#    ftxui::component
+#    ftxui::dom
+#    ftxui::screen
+)
 
 # Ativa testes
 enable_testing()

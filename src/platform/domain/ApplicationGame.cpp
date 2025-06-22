@@ -1,10 +1,12 @@
 #include "ApplicationGame.h"
 
-#include "InitialSG.h"
+#include "state/StateGame.h"
 
 ApplicationGame::ApplicationGame() {
     m_state = std::make_unique<InitialSG>();
 }
+
+ApplicationGame::~ApplicationGame() = default;
 
 void ApplicationGame::setState(std::unique_ptr<IStateGame> state) {
     m_state = std::move(state);
@@ -18,7 +20,7 @@ std::string ApplicationGame::getGameStateName() const {
     return m_state->getGameStateName();
 }
 
-GameState ApplicationGame::getGameState() const {
+StateEnum ApplicationGame::getGameState() const {
     return m_state->getGameState();
 }
 
@@ -28,6 +30,10 @@ void ApplicationGame::introduction() {
 
 void ApplicationGame::menu() {
     m_state->menu(*this);
+}
+
+void ApplicationGame::game() {
+    m_state->game(*this);
 }
 
 void ApplicationGame::exit() {

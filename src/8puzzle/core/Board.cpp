@@ -14,10 +14,10 @@ void Board::createRandomGame() {
 	board.clear();
 
 	for (int index = 1; index <= 8; index++) {
-		Tile tile = Tile(index, std::to_string(index));
-		board.emplace_back(tile);
-	}
-    Tile emptyTile = Tile();
+        auto tile = Tile(index, std::to_string(index));
+        board.emplace_back(tile);
+    }
+    auto emptyTile = Tile();
     board.emplace_back(emptyTile);
 
     auto rng = std::default_random_engine{ std::random_device{}() };
@@ -48,16 +48,16 @@ std::pair<int, int> Board::getTilePosition(int idTile) const
 
 bool Board::moveTile(int idTile) {
     std::pair<int, int> emptyPosition = getEmptyPosition();
-    std::pair<int, int> emptyTile= getTilePosition(idTile);
+    std::pair<int, int> emptyTile = getTilePosition(idTile);
 
-    int emptyLine = emptyPosition.first;
-    int emptyColumn = emptyPosition.second;
+    const int emptyLine = emptyPosition.first;
+    const int emptyColumn = emptyPosition.second;
 
-    int lineTile = emptyTile.first;
-    int columnTile = emptyTile.second;
+    const int lineTile = emptyTile.first;
+    const int columnTile = emptyTile.second;
 
-    int dLine = std::abs(emptyLine - lineTile);
-    int dColumn = std::abs(emptyColumn - columnTile);
+    const int dLine = std::abs(emptyLine - lineTile);
+    const int dColumn = std::abs(emptyColumn - columnTile);
 
     if ((dLine == 1 && dColumn == 0) || (dLine == 0 && dColumn == 1)) {
         // Troca as pe�as

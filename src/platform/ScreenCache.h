@@ -9,18 +9,18 @@
 class ScreenCache final {
     using CreatorFunc = std::function<std::unique_ptr<IScreen>()>;
 
-    std::unordered_map<GameState, std::unique_ptr<IScreen>> m_cache;
-    std::unordered_map<GameState, CreatorFunc> m_creators;
+    std::unordered_map<StateEnum, std::unique_ptr<IScreen>> m_cache;
+    std::unordered_map<StateEnum, CreatorFunc> m_creators;
 
 public:
     ScreenCache() = default;
     ~ScreenCache() = default;
 
-    void registerScreen(const GameState& key, CreatorFunc creator) {
+    void registerScreen(const StateEnum& key, CreatorFunc creator) {
         m_creators[key] = std::move(creator);
     }
 
-    IScreen& getScreen(const GameState& key) {
+    IScreen& getScreen(const StateEnum& key) {
         const auto cachedScreenIterator = m_cache.find(key);
         if (cachedScreenIterator != m_cache.end()) {
             return *cachedScreenIterator->second;
@@ -28,7 +28,7 @@ public:
 
         auto creatorIterator = m_creators.find(key);
         if (creatorIterator == m_creators.end()) {
-            throw std::out_of_range("No screen found for key: " + key);
+            throw std::out_of_range("No screen found for key: ");
         }
 
         std::unique_ptr<IScreen> screen = creatorIterator->second();
