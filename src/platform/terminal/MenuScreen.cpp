@@ -41,7 +41,7 @@ void MenuScreen::input(ApplicationGame& applicationGame) {
                         applicationGame.game();
                         break;
                     case 1: // Recorde
-                        // applicationGame.record();
+                        applicationGame.record();
                         break;
                     case 2: // Configuracoes
                         // applicationGame.configuration();

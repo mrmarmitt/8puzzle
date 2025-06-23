@@ -21,6 +21,7 @@ public:
     void introduction();
     void menu();
     void game();
+    void record();
     void exit();
 };
 

@@ -1,7 +1,6 @@
 #include "GameScreen.h"
 
 #include <conio.h>
-
 #include <iostream>
 
 void GameScreen::draw(ApplicationGame& applicationGame) {

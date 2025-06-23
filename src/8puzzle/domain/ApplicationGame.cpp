@@ -35,6 +35,9 @@ void ApplicationGame::menu() {
 void ApplicationGame::game() {
     m_state->game(*this);
 }
+void ApplicationGame::record() {
+    m_state->record(*this);
+}
 
 void ApplicationGame::exit() {
     m_state->exit(*this);
