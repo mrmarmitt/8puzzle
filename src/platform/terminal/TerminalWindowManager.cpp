@@ -34,8 +34,14 @@ void TerminalWindowManager::update() {
 
     // Reposiciona o cursor no início
     SetConsoleCursorPosition(m_hConsole, m_homeCoords);
+    gotoXY(0, 10);
 }
 
 void TerminalWindowManager::cleanup() {
 
+}
+
+void TerminalWindowManager::gotoXY(const int x, const int y) {
+    const COORD coord = {static_cast<SHORT>(x), static_cast<SHORT>(y)};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }

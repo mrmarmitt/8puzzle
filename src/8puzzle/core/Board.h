@@ -15,11 +15,14 @@ public:
     Board();
     explicit Board(std::vector<Tile>&& fakeBoard);
 
+    [[nodiscard]] const std::vector<Tile>& getBoard() const;
+
     [[nodiscard]] std::pair<int, int> getEmptyPosition() const;
     [[nodiscard]] std::pair<int, int> getTilePosition(int idTile) const;
 
-    bool moveTile(int idTile);
+        bool moveTile(int idTile);
     [[nodiscard]] bool isSolved() const;
 
-    [[nodiscard]] std::string toString() const;
+
+    // [[nodiscard]] std::string toString() const;
 };

@@ -4,8 +4,6 @@
 class MenuScreen final : public IScreen {
     int m_selected = 0;
 
-    static void gotoxy(int i, int i1);
-
 public:
     MenuScreen() = default;
 

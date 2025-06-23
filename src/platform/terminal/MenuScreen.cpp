@@ -6,14 +6,7 @@
 
 #include "TerminalWindowManager.h"
 
-void MenuScreen::gotoxy(int x, int y) {
-    const COORD coord = {static_cast<SHORT>(x), static_cast<SHORT>(y)};
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
-
 void MenuScreen::draw(ApplicationGame& applicationGame) {
-    gotoxy(0, 10); // Posição do menu
-
     std::cout << "=== MENU PRINCIPAL ===" << std::endl << std::endl;
 
     const std::vector<std::string> options = {"Novo Jogo", "Recorde", "Configuracoes", "Sair"};

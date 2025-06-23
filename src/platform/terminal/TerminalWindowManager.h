@@ -13,4 +13,5 @@ public:
     void init() override;
     void update() override;
     void cleanup() override;
+    static auto gotoXY(int x, int y) -> void;
 };
