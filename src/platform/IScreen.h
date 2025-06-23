@@ -1,5 +1,5 @@
 #pragma once
-#include "domain/ApplicationGame.h"
+#include "../8puzzle/domain/ApplicationGame.h"
 
 class IScreen {
 public:

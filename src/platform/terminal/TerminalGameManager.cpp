@@ -7,7 +7,7 @@
 #include "InitialScreen.h"
 #include "IntroductionScreen.h"
 #include "MenuScreen.h"
-#include "platform/domain/ApplicationGame.h"
+#include "8puzzle/domain/ApplicationGame.h"
 
 
 TerminalGameManager::TerminalGameManager() {

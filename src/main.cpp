@@ -4,7 +4,7 @@
 #include "platform/EngineManager.h"
 #include "platform/FPSManager.h"
 
-#include "platform/domain/ApplicationGame.h"
+#include "8puzzle/domain/ApplicationGame.h"
 #include "platform/terminal/TerminalGameManager.h"
 #include "platform/terminal/TerminalWindowManager.h"
 
