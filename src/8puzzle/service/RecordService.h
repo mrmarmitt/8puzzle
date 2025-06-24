@@ -35,4 +35,25 @@ public:
     [[nodiscard]] const std::vector<Record>& getAll() const {
         return m_records;
     }
+
+    [[nodiscard]] bool isNewRecord(const Record& newRecord, std::size_t minPosition) const {
+        const auto sortedByFaster = listByFastestTime();
+        const auto sortedByMoves= listByFewestMoves();
+
+        if (m_records.size() < minPosition) {
+            return true;
+        }
+        const Record& worstTimeTop = sortedByFaster[minPosition - 1];
+        const Record& worstMoveTop = sortedByMoves[minPosition - 1];
+
+        if (newRecord.isFasterThan(worstTimeTop)) {
+            return true;
+        }
+
+        if (newRecord.hasLessMovesThan(worstMoveTop)) {
+            return true;
+        }
+
+        return false;
+    }
 };

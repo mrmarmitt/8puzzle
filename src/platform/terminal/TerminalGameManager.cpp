@@ -33,8 +33,8 @@ TerminalGameManager::TerminalGameManager() {
         return std::make_unique<MenuScreen>();
     });
 
-    m_screenCache->registerScreen(StateEnum::Game, []() {
-        return std::make_unique<GameScreen>();
+    m_screenCache->registerScreen(StateEnum::Game, [this]() {
+        return std::make_unique<GameScreen>(*m_recordService);
     });
 
     m_screenCache->registerScreen(StateEnum::Record, [this]() {

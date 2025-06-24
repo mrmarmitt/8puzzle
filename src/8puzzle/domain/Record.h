@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <utility>
 
 class Record {
     std::string m_name;
@@ -14,20 +15,27 @@ public:
     : m_name(std::move(name)), m_numberOfMoves(moves),
       m_gamingAt(std::move(gamingAt)), m_time(time) {}
 
-    const std::string& getName() const { return m_name; }
-    int getNumberOfMoves() const { return m_numberOfMoves; }
-    const std::string& getGamingAt() const { return m_gamingAt; }
-    int getTime() const { return m_time; }
+    Record(const int moves, const int time) : m_numberOfMoves(moves), m_time(time) {}
 
-    bool isFasterThan(const Record& other) const {
+    void assignRecord(std::string name, std::string gamingAt) {
+        m_name = std::move(name);
+        m_gamingAt = std::move(gamingAt);
+    }
+
+    [[nodiscard]] const std::string& getName() const { return m_name; }
+    [[nodiscard]] int getNumberOfMoves() const { return m_numberOfMoves; }
+    [[nodiscard]] const std::string& getGamingAt() const { return m_gamingAt; }
+    [[nodiscard]]  int getTime() const { return m_time; }
+
+    [[nodiscard]] bool isFasterThan(const Record& other) const {
         return m_time < other.m_time;
     }
 
-    bool isSlowerThan(const Record& other) const {
+    [[nodiscard]] bool isSlowerThan(const Record& other) const {
         return m_time > other.m_time;
     }
 
-    bool hasMoreMovesThan(const Record& other) const {
+    [[nodiscard]] bool hasMoreMovesThan(const Record& other) const {
         return m_numberOfMoves > other.m_numberOfMoves;
     }
 
