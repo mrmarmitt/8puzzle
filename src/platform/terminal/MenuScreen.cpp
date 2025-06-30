@@ -4,9 +4,10 @@
 #include <iostream>
 #include <vector>
 
+#include "8puzzle/domain/GameRouter.h"
 #include "TerminalWindowManager.h"
 
-void MenuScreen::draw(ApplicationGame& applicationGame) {
+void MenuScreen::draw() {
     std::cout << "=== MENU PRINCIPAL ===" << std::endl << std::endl;
 
     const std::vector<std::string> options = {"Novo Jogo", "Recorde", "Configuracoes", "Sair"};
@@ -22,11 +23,10 @@ void MenuScreen::draw(ApplicationGame& applicationGame) {
     }
 }
 
-void MenuScreen::input(ApplicationGame& applicationGame) {
+void MenuScreen::input() {
     if (_kbhit()) {
-        char key = _getch();
-
-        const int numOptions = 4;
+        const char key = _getch();
+        constexpr int numOptions = 4;
 
         switch (key) {
             case 72: // Seta para CIMA
@@ -38,18 +38,22 @@ void MenuScreen::input(ApplicationGame& applicationGame) {
             case 13: // ENTER
                 switch (m_selected) {
                     case 0:
-                        applicationGame.game();
+                        getGameRouter().game();
                         break;
                     case 1: // Recorde
-                        applicationGame.record();
+                        getGameRouter().record();
                         break;
                     case 2: // Configuracoes
-                        // applicationGame.configuration();
+                        // getGameRouter().configuration();
                         break;
                     case 3: // Sair
-                        applicationGame.exit(); // Chama o método exit na ApplicationGame
+                        getGameRouter().exit(); // Chama o método exit na ApplicationGame
                         break;
+                    default:;
                 }
+                break;
+            case 27:
+                getGameRouter().exit(); // Chama o método exit na ApplicationGame
                 break;
             default:
                 break;

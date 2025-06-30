@@ -5,7 +5,7 @@
 #include "IGameManager.h"
 
 EngineManager::EngineManager(std::unique_ptr<IWindowManager> windowManager,
-                                 std::unique_ptr<IGameManager> gameManager,
+                                 std::unique_ptr<GameManager> gameManager,
                                  std::unique_ptr<FPSManager> fpsManager) :
         m_windowManager(std::move(windowManager)),
         m_gameManager(std::move(gameManager)),
@@ -53,8 +53,10 @@ void EngineManager::run() {
         if (m_fpsManager->shouldRender()) {
             m_windowManager->update();
 
+            m_gameManager->onEnter();
             m_gameManager->input();
             m_gameManager->render();
+
             m_isRunning = !m_gameManager->shouldExist();
         }
     }

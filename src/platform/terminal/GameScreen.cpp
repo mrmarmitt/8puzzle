@@ -1,14 +1,15 @@
 #include "GameScreen.h"
 
 #include <conio.h>
-#include <iostream>
 #include <chrono>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 
-GameScreen::GameScreen(RecordService& service): m_recordService(&service){}
+#include "8puzzle/domain/GameRouter.h"
+#include "8puzzle/domain/Record.h"
 
-void GameScreen::draw(ApplicationGame& applicationGame) {
+void GameScreen::draw() {
 
     if (!m_started) {
         m_startTime = std::chrono::steady_clock::now();
@@ -18,17 +19,13 @@ void GameScreen::draw(ApplicationGame& applicationGame) {
     std::cout << printBoard() << std::endl;
 
     if (m_board.isSolved()) {
-        auto record = Record(m_moves, m_time);
-
-        if (m_recordService->isNewRecord(record, 10)) {
-            record.assignRecord("name", "2025-06-22 18:10");
-            m_recordService->addRecord(record);
-        }
-        applicationGame.menu();
+        const auto record = Record(m_moves, m_time);
+        // gameRouter.setRecordFromEndGame(record);
+        getGameRouter().gameOver();
     }
 }
 
-void GameScreen::input(ApplicationGame& applicationGame) {
+void GameScreen::input() {
     if (_kbhit()) {
         char key = _getch();
 
@@ -39,11 +36,20 @@ void GameScreen::input(ApplicationGame& applicationGame) {
                 m_moves = m_moves + 1;
             }
         }
+
+        if (key == 27) {
+            m_moves = 0;
+            m_started = false;
+            getGameRouter().menu();
+        }
     }
 }
 
 std::string GameScreen::printBoard() {
     std::ostringstream result;
+
+    result << "=== RECORDES ===\n";
+    result << "(1-8) Movimentos | (ESC) Voltar\n\n";
 
     result << "   0   1   2\n";
     result << " +---+---+---+\n";

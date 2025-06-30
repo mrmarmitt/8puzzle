@@ -2,11 +2,9 @@
 
 #include <iostream>
 
-void InitialScreen::draw(ApplicationGame& applicationGame) {
+#include "8puzzle/domain/GameRouter.h"
+
+void InitialScreen::draw() {
     std::cout << "InitialScreen: draw" << std::endl;
-    applicationGame.introduction();
-}
-
-void InitialScreen::input(ApplicationGame& applicationGame) {
-
+    getGameRouter().introduction();
 }

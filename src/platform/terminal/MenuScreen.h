@@ -5,8 +5,11 @@ class MenuScreen final : public IScreen {
     int m_selected = 0;
 
 public:
-    MenuScreen() = default;
+    explicit MenuScreen(GameRouter& gameRouter) : IScreen(gameRouter) {}
 
-    void draw(ApplicationGame& applicationGame) override;
-    void input(ApplicationGame& applicationGame) override;
+    void onEnter() override {}
+    void draw() override;
+    void input() override;
+    void onExit() override {}
+
 };

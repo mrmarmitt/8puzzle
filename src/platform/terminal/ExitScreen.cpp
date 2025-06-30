@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-void ExitScreen::draw(ApplicationGame& applicationGame) {
+void ExitScreen::draw() {
     std::cout << "ExitScreen: draw" << std::endl;
 }
 
-void ExitScreen::input(ApplicationGame& applicationGame) {
+void ExitScreen::input() {
 
 }

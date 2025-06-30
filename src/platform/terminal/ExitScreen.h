@@ -3,7 +3,10 @@
 
 class ExitScreen final : public IScreen {
 public:
-    ExitScreen() = default;
-    void draw(ApplicationGame& applicationGame) override;
-    void input(ApplicationGame& applicationGame) override;
+    explicit ExitScreen(GameRouter& gameRouter) : IScreen(gameRouter) {}
+
+    void onEnter() override {}
+    void draw() override;
+    void input() override;
+    void onExit() override {}
 };

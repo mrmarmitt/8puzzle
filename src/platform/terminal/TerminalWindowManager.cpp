@@ -1,11 +1,6 @@
-//
-// Created by mrmar on 22/06/2025.
-//
-
 #include "TerminalWindowManager.h"
 
 #include <iostream>
-
 
 using namespace std;
 

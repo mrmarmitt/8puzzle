@@ -3,7 +3,10 @@
 
 class IntroductionScreen final : public IScreen {
 public:
-    IntroductionScreen() = default;
-    void draw(ApplicationGame& applicationGame) override;
-    void input(ApplicationGame& applicationGame) override;
+    explicit IntroductionScreen(GameRouter& gameRouter) : IScreen(gameRouter) {}
+
+    void onEnter() override {}
+    void draw() override;
+    void input() override;
+    void onExit() override {}
 };

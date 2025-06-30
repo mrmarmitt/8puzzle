@@ -5,6 +5,7 @@ enum class StateEnum {
     Introduction,
     Menu,
     Game,
+    GameOver,
     Record,
     Exit
 };

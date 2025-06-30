@@ -3,7 +3,10 @@
 
 class InitialScreen final : public IScreen {
 public:
-    InitialScreen() = default;
-    void draw(ApplicationGame& applicationGame) override;
-    void input(ApplicationGame& applicationGame) override;
+    explicit InitialScreen(GameRouter& gameRouter) : IScreen(gameRouter) {}
+
+    void onEnter() override {}
+    void draw() override;
+    void input() override {}
+    void onExit() override {}
 };

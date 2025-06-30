@@ -4,8 +4,9 @@
 #include "platform/EngineManager.h"
 #include "platform/FPSManager.h"
 
-#include "8puzzle/domain/ApplicationGame.h"
-#include "platform/terminal/TerminalGameManager.h"
+#include "8puzzle/domain/GameRouter.h"
+#include "platform/ScreenContainer.h"
+#include "platform/terminal/TerminalScreenFactory.h"
 #include "platform/terminal/TerminalWindowManager.h"
 
 using namespace std;
@@ -14,11 +15,16 @@ using namespace std;
 int main()
 {
     std::cout << "Iniciando o jogo..." << std::endl;
-    auto windowManager = std::make_unique<TerminalWindowManager>();
-    auto fpsManager = std::make_unique<FPSManager>(20);
-    auto gameManager = std::make_unique<TerminalGameManager>();
 
-    const auto applicationGame = std::make_unique<ApplicationGame>();
+    const auto gameRouter = std::make_unique<GameRouter>();
+    ScreenContainer& container = ScreenContainer::get();
+
+    TerminalScreenFactory::populateTerminalScreens(container, *gameRouter);
+
+
+    auto windowManager = std::make_unique<TerminalWindowManager>();
+    auto fpsManager = std::make_unique<FPSManager>(30);
+    auto gameManager = std::make_unique<GameManager>(*gameRouter);
 
     EngineManager engineManager(
         std::move(windowManager),

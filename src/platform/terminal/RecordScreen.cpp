@@ -4,22 +4,23 @@
 #include <iostream>
 #include <vector>
 
+#include "8puzzle/domain/GameRouter.h"
 #include "8puzzle/service/RecordService.h"
+#include "platform/ServiceContainer.h"
 
-RecordScreen::RecordScreen(RecordService& service)
-    : m_recordService(&service) {}
-
-void RecordScreen::draw(ApplicationGame& applicationGame) {
+void RecordScreen::draw() {
     std::cout << "=== RECORDES ===\n";
     std::cout << "(T)empo | (M)ovimentos | (ESC) Voltar\n\n";
+
+    const auto recordService = ServiceContainer::get().getRecordService();
 
     std::vector<Record> records;
 
     if (m_sortType == RecordSortType::ByTime) {
-        records = m_recordService->listByFastestTime();
+        records = recordService->listByFastestTime();
         std::cout << "Ordenado por: Tempo\n\n";
     } else {
-        records = m_recordService->listByFewestMoves();
+        records = recordService->listByFewestMoves();
         std::cout << "Ordenado por: Movimentos\n\n";
     }
 
@@ -40,7 +41,7 @@ void RecordScreen::draw(ApplicationGame& applicationGame) {
     std::cout << std::endl;
 }
 
-void RecordScreen::input(ApplicationGame& applicationGame) {
+void RecordScreen::input() {
     if (_kbhit()) {
         char key = _getch();
 
@@ -54,7 +55,7 @@ void RecordScreen::input(ApplicationGame& applicationGame) {
                 m_sortType = RecordSortType::ByMoves;
                 break;
             case 27: // ESC
-                applicationGame.menu();
+                getGameRouter().menu();
                 break;
         }
     }

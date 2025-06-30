@@ -1,11 +1,27 @@
 #pragma once
-#include "../8puzzle/domain/ApplicationGame.h"
+
+class GamePlay;
+class GameRouter;
 
 class IScreen {
+
+    GameRouter& m_gameRouter;
+    // GamePlay& m_gamePlay;
+
+    bool isEnterExecuted = false;
+    bool isExitExecuted = false;
 public:
-    IScreen() = default;
+    explicit IScreen(GameRouter& gameRouter/*, GamePlay& gamePlay*/) :
+        m_gameRouter(gameRouter)/*, m_gamePlay(gamePlay)*/{}
+
     virtual ~IScreen() = default;
 
-    virtual void draw(ApplicationGame& applicationGame) = 0;
-    virtual void input(ApplicationGame& applicationGame) = 0;
+    [[nodiscard]] GameRouter& getGameRouter() const { return m_gameRouter;}
+
+    virtual void onEnter() = 0;
+    virtual void onEnterExecuted() { isEnterExecuted = true;}
+    virtual void draw() = 0;
+    virtual void input() = 0;
+    virtual void onExit() = 0;
+    virtual void onExitExecuted() { isExitExecuted = true;}
 };

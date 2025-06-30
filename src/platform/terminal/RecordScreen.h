@@ -1,4 +1,7 @@
 #pragma once
+
+#include <memory>
+
 #include "platform/IScreen.h"
 
 class RecordService;
@@ -9,13 +12,15 @@ enum class RecordSortType {
 };
 
 class RecordScreen final : public IScreen {
-
-    std::unique_ptr<RecordService> m_recordService;
     RecordSortType m_sortType = RecordSortType::ByTime;
 
 public:
-    explicit RecordScreen(RecordService& service);
+    explicit RecordScreen(GameRouter& gameRouter) :
+        IScreen(gameRouter) {}
 
-    void draw(ApplicationGame& applicationGame) override;
-    void input(ApplicationGame& applicationGame) override;
+    void onEnter() override {}
+    void draw() override;
+    void input() override;
+    void onExit() override {}
+
 };
