@@ -6,13 +6,12 @@ class GameRouter;
 class IScreen {
 
     GameRouter& m_gameRouter;
-    // GamePlay& m_gamePlay;
 
     bool isEnterExecuted = false;
-    bool isExitExecuted = false;
+
 public:
-    explicit IScreen(GameRouter& gameRouter/*, GamePlay& gamePlay*/) :
-        m_gameRouter(gameRouter)/*, m_gamePlay(gamePlay)*/{}
+    explicit IScreen(GameRouter& gameRouter) :
+        m_gameRouter(gameRouter){}
 
     virtual ~IScreen() = default;
 
@@ -20,8 +19,10 @@ public:
 
     virtual void onEnter() = 0;
     virtual void onEnterExecuted() { isEnterExecuted = true;}
+    [[nodiscard]] virtual bool isOnEnterExecuted() const { return isEnterExecuted;}
     virtual void draw() = 0;
     virtual void input() = 0;
     virtual void onExit() = 0;
-    virtual void onExitExecuted() { isExitExecuted = true;}
+    virtual void resetConst() { isEnterExecuted = false; }
+
 };

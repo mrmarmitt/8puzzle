@@ -6,16 +6,16 @@ class Record {
     std::string m_name;
     int m_numberOfMoves = 0;
     std::string m_gamingAt;
-    int m_time = 0;
+    long long m_durationMillis = 0;
 
 public:
     Record() = default;
 
-    Record(std::string name, const int moves, std::string gamingAt, const int time)
+    Record(std::string name, const int moves, std::string gamingAt, const long long durationMillis)
     : m_name(std::move(name)), m_numberOfMoves(moves),
-      m_gamingAt(std::move(gamingAt)), m_time(time) {}
+      m_gamingAt(std::move(gamingAt)), m_durationMillis(durationMillis) {}
 
-    Record(const int moves, const int time) : m_numberOfMoves(moves), m_time(time) {}
+    Record(const int moves, const long long durationMillis) : m_numberOfMoves(moves), m_durationMillis(durationMillis) {}
 
     void assignRecord(std::string name, std::string gamingAt) {
         m_name = std::move(name);
@@ -25,21 +25,21 @@ public:
     [[nodiscard]] const std::string& getName() const { return m_name; }
     [[nodiscard]] int getNumberOfMoves() const { return m_numberOfMoves; }
     [[nodiscard]] const std::string& getGamingAt() const { return m_gamingAt; }
-    [[nodiscard]]  int getTime() const { return m_time; }
+    [[nodiscard]] long long getTime() const { return m_durationMillis; }
 
     [[nodiscard]] bool isFasterThan(const Record& other) const {
-        return m_time < other.m_time;
+        return m_durationMillis < other.m_durationMillis;
     }
 
     [[nodiscard]] bool isSlowerThan(const Record& other) const {
-        return m_time > other.m_time;
+        return m_durationMillis > other.m_durationMillis;
     }
 
     [[nodiscard]] bool hasMoreMovesThan(const Record& other) const {
         return m_numberOfMoves > other.m_numberOfMoves;
     }
 
-    bool hasLessMovesThan(const Record& other) const {
+    [[nodiscard]] bool hasLessMovesThan(const Record& other) const {
         return m_numberOfMoves < other.m_numberOfMoves;
     }
 };

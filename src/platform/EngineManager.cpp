@@ -56,6 +56,7 @@ void EngineManager::run() {
             m_gameManager->onEnter();
             m_gameManager->input();
             m_gameManager->render();
+            m_gameManager->onExit();
 
             m_isRunning = !m_gameManager->shouldExist();
         }

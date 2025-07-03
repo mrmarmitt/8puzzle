@@ -7,48 +7,53 @@
 #include <sstream>
 
 #include "8puzzle/domain/GameRouter.h"
-#include "8puzzle/domain/Record.h"
+#include "platform/ServiceContainer.h"
+
+GameScreen::GameScreen(GameRouter& gameRouter) :
+    IScreen(gameRouter),
+    m_gamePlayService(ServiceContainer::get().getGameService()){}
+
 
 void GameScreen::draw() {
-
-    if (!m_started) {
-        m_startTime = std::chrono::steady_clock::now();
-        m_started = true;
-    }
-
+    const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
     std::cout << printBoard() << std::endl;
 
     if (m_board.isSolved()) {
-        const auto record = Record(m_moves, m_time);
-        // gameRouter.setRecordFromEndGame(record);
+        gamePlay->completeGame();
         getGameRouter().gameOver();
     }
 }
 
 void GameScreen::input() {
+    const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
     if (_kbhit()) {
-        char key = _getch();
+        const int key = _getch();
 
         if (key >= '0' && key <= '8') {
             const int numberPressed = key - '0';
 
             if (m_board.moveTile(numberPressed)) {
-                m_moves = m_moves + 1;
+                gamePlay->incrementMove();
             }
         }
 
         if (key == 27) {
-            m_moves = 0;
-            m_started = false;
+            m_gamePlayService->clear();
             getGameRouter().menu();
         }
     }
 }
 
-std::string GameScreen::printBoard() {
+void GameScreen::onExit() {
+    std::cout << "GAME_SCREEN PASSOU AQUI" << std::endl;
+    m_board.createRandomGame();
+}
+
+std::string GameScreen::printBoard() const {
+    const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
     std::ostringstream result;
 
-    result << "=== RECORDES ===\n";
+    result << "=== GAME ===\n";
     result << "(1-8) Movimentos | (ESC) Voltar\n\n";
 
     result << "   0   1   2\n";
@@ -68,21 +73,20 @@ std::string GameScreen::printBoard() {
         result << "\n +---+---+---+\n";
     }
 
-    const auto now = std::chrono::steady_clock::now();
-    const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_startTime).count();
-    m_time = static_cast<int>(elapsed);
+    const auto now = std::chrono::system_clock::now();
+    const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+        now - gamePlay->getStartedAt()
+    ).count();
 
     const int hours = static_cast<int>(elapsed / (1000 * 60 * 60));
     const int minutes = static_cast<int>((elapsed / (1000 * 60)) % 60);
     const int seconds = static_cast<int>((elapsed / 1000) % 60);
     const int milliseconds = static_cast<int>(elapsed % 1000);
 
-    result << "\nMovimentos: " << m_moves << "\n";
-    result << "Tempo: "
-           << std::setfill('0') << std::setw(2) << hours << ":"
-           << std::setw(2) << minutes << ":"
-           << std::setw(2) << seconds << "."
-           << std::setw(3) << milliseconds << "\n";
+    result << "\nMovimentos: " << gamePlay->getNumberOfMoves() << "\n";
+    result << "Tempo: " << std::setfill('0') << std::setw(2) << hours << ":" << std::setw(2)
+           << minutes << ":" << std::setw(2) << seconds << "." << std::setw(3) << milliseconds
+           << "\n";
 
     return result.str();
 }

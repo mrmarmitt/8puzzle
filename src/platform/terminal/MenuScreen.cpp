@@ -1,11 +1,16 @@
 #include "MenuScreen.h"
 
+#include <windows.h>
 #include <conio.h>
 #include <iostream>
 #include <vector>
 
 #include "8puzzle/domain/GameRouter.h"
-#include "TerminalWindowManager.h"
+#include "platform/ServiceContainer.h"
+
+MenuScreen::MenuScreen(GameRouter& gameRouter) :
+    IScreen(gameRouter),
+    m_gamePlayService(ServiceContainer::get().getGameService()){}
 
 void MenuScreen::draw() {
     std::cout << "=== MENU PRINCIPAL ===" << std::endl << std::endl;
@@ -25,7 +30,7 @@ void MenuScreen::draw() {
 
 void MenuScreen::input() {
     if (_kbhit()) {
-        const char key = _getch();
+        const int key = _getch();
         constexpr int numOptions = 4;
 
         switch (key) {
@@ -38,6 +43,7 @@ void MenuScreen::input() {
             case 13: // ENTER
                 switch (m_selected) {
                     case 0:
+                        m_gamePlayService->startNewGame();
                         getGameRouter().game();
                         break;
                     case 1: // Recorde

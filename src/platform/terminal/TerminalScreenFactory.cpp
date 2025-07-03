@@ -2,6 +2,7 @@
 
 #include "8puzzle/domain/state/StateEnum.h"
 #include "ExitScreen.h"
+#include "GameOverScreen.h"
 #include "GameScreen.h"
 #include "InitialScreen.h"
 #include "IntroductionScreen.h"
@@ -14,6 +15,7 @@ void TerminalScreenFactory::populateTerminalScreens(ScreenContainer& container, 
     static IntroductionScreen introductionScreen(gameRouter);
     static MenuScreen menuScreen(gameRouter);
     static GameScreen gameScreen(gameRouter);
+    static GameOverScreen gameOverScreen(gameRouter);
     static RecordScreen recordScreen(gameRouter);
     static ExitScreen exitScreen(gameRouter);
 
@@ -21,6 +23,7 @@ void TerminalScreenFactory::populateTerminalScreens(ScreenContainer& container, 
     container.registerScreen(StateEnum::Introduction, &introductionScreen);
     container.registerScreen(StateEnum::Menu, &menuScreen);
     container.registerScreen(StateEnum::Game, &gameScreen);
+    container.registerScreen(StateEnum::GameOver, &gameOverScreen);
     container.registerScreen(StateEnum::Record, &recordScreen);
     container.registerScreen(StateEnum::Exit, &exitScreen);
 

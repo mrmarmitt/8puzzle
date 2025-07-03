@@ -5,17 +5,24 @@
 #include <iostream>
 
 #include "8puzzle/domain/GameRouter.h"
+#include "platform/ServiceContainer.h"
+
+GameOverScreen::GameOverScreen(GameRouter& gameRouter) :
+    IScreen(gameRouter),
+    m_gamePlayService(ServiceContainer::get().getGameService()),
+    m_recordService(ServiceContainer::get().getRecordService()),
+    m_isRecord(false){}
 
 void GameOverScreen::onEnter() {
-    // Record& record = gameRouter.getRecordFromEndGame();
-    // if (m_recordService->isNewRecord(record, 10)) {
-        // m_isRecord = m_recordService->isNewRecord(record, 10);
-    // }
+    auto record = buildRecord();
+    if (m_recordService->isNewRecord(record, 10)) {
+        m_isRecord = m_recordService->isNewRecord(record, 10);
+    }
 }
 
 void GameOverScreen::draw() {
     if (m_isRecord) {
-        std::cout << "Parabens! Você fez um novo recorde!\n";
+        std::cout << "Parabens! Voce fez um novo recorde!\n";
         std::cout << "Digite seu nome para registrar: " << m_name << std::flush;
     } else {
         std::cout << "Voce nao bateu o recorde. Pressione Enter para voltar ao menu.\n";
@@ -24,13 +31,15 @@ void GameOverScreen::draw() {
 void GameOverScreen::input() {
     if (!_kbhit()) return;
 
-    const char key = _getch();
+    const int key = _getch();
 
     if (m_isRecord) {
 
         if (key == 13) { // ENTER
-            // gameRouter.getRecordFromEndGame().assignRecord(m_name, "2025-06-22 18:10");
-            // m_recordService->addRecord(gameRouter.getRecordFromEndGame());
+
+            const auto record = buildRecordAndAssignRecord();
+            m_recordService->addRecord(record);
+
             getGameRouter().menu();
         }
         // BACKSPACE remove caractere
@@ -52,5 +61,19 @@ void GameOverScreen::input() {
 }
 
 void GameOverScreen::onExit() {
+    m_isRecord = false;
+    m_name = {};
+}
 
+Record GameOverScreen::buildRecord() const {
+    const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
+    auto record = Record(gamePlay->getNumberOfMoves(), gamePlay->getDurationMillis());
+    return record;
+}
+
+Record GameOverScreen::buildRecordAndAssignRecord() const {
+    const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
+    auto record = Record(gamePlay->getNumberOfMoves(), gamePlay->getDurationMillis());
+    record.assignRecord(m_name, gamePlay->getStartedAtAsString());
+    return record;
 }

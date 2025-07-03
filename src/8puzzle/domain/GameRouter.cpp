@@ -4,15 +4,15 @@
 #include "state/StateEnum.h"
 #include "state/StateGame.h"
 
-
 GameRouter::GameRouter() {
     m_currentState = std::make_unique<InitialSG>();
+    m_nextState = std::make_unique<InitialSG>();
 }
 
 GameRouter::~GameRouter() = default;
 
-void GameRouter::setState(std::unique_ptr<IStateGame> state) {
-    m_currentState = std::move(state);
+void GameRouter::setNextState(std::unique_ptr<IStateGame> state) {
+    m_nextState = std::move(state);
 }
 
 IStateGame& GameRouter::getCurrentStateGame() const {
@@ -30,27 +30,38 @@ IScreen& GameRouter::getCurrentCachedScreen() const {
     ScreenContainer& container = ScreenContainer::get();
     return container.getScreen(m_currentState->getGameStateEnum());
 }
+bool GameRouter::hasNextScreen() const {
+    return m_nextState->getGameStateEnum() != m_currentState->getGameStateEnum();
+}
+
+void GameRouter::goToNextScreen() {
+    if (m_nextState) {
+        m_currentState = m_nextState->clone();
+    } else {
+        throw std::runtime_error("No next state set!");
+    }
+}
 
 void GameRouter::introduction() {
-    m_currentState->introduction(*this);
+    m_nextState->introduction(*this);
 }
 
 void GameRouter::menu() {
-    m_currentState->menu(*this);
+    m_nextState->menu(*this);
 }
 
 void GameRouter::game() {
-    m_currentState->game(*this);
+    m_nextState->game(*this);
 }
 
 void GameRouter::gameOver() {
-    m_currentState->gameOver(*this);
+    m_nextState->gameOver(*this);
 }
 
 void GameRouter::record() {
-    m_currentState->record(*this);
+    m_nextState->record(*this);
 }
 
 void GameRouter::exit() {
-    m_currentState->exit(*this);
+    m_nextState->exit(*this);
 }

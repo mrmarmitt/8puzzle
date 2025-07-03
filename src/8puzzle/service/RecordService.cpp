@@ -1,5 +1,7 @@
 #include "RecordService.h"
 
+#include <algorithm>
+
 void RecordService::loadInitialRecords(const std::vector<Record>& initialRecords){
     m_records = initialRecords;
 }
@@ -28,7 +30,7 @@ const std::vector<Record>& RecordService::getAll() const {
     return m_records;
 }
 
-bool RecordService::isNewRecord(const Record& newRecord, int minPosition) const {
+bool RecordService::isNewRecord(const Record& newRecord, const int minPosition) const {
     const auto sortedByFaster = listByFastestTime();
     const auto sortedByMoves= listByFewestMoves();
 

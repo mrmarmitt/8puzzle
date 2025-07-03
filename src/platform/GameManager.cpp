@@ -10,8 +10,10 @@ GameManager::~GameManager() = default;
 void GameManager::onEnter() const {
     IScreen& screen = m_gameRouter->getCurrentCachedScreen();
 
-    screen.onEnter();
-    screen.onEnterExecuted();
+    if (!screen.isOnEnterExecuted()) {
+        screen.onEnter();
+        screen.onEnterExecuted();
+    }
 }
 
 void GameManager::render() const {
@@ -27,10 +29,12 @@ void GameManager::input() const {
 }
 
 void GameManager::onExit() const {
-    IScreen& screen = m_gameRouter->getCurrentCachedScreen();
-
-    screen.onEnter();
-    screen.onExitExecuted();
+    if (m_gameRouter->hasNextScreen()) {
+        IScreen& screen = m_gameRouter->getCurrentCachedScreen();
+        screen.onExit();
+        screen.resetConst();
+        m_gameRouter->goToNextScreen();
+    }
 }
 
 bool GameManager::shouldExist() const {

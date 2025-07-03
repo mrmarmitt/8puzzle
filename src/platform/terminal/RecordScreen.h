@@ -13,10 +13,10 @@ enum class RecordSortType {
 
 class RecordScreen final : public IScreen {
     RecordSortType m_sortType = RecordSortType::ByTime;
+    std::shared_ptr<RecordService> m_recordService;
 
 public:
-    explicit RecordScreen(GameRouter& gameRouter) :
-        IScreen(gameRouter) {}
+    explicit RecordScreen(GameRouter& gameRouter);
 
     void onEnter() override {}
     void draw() override;

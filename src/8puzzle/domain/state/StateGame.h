@@ -13,6 +13,7 @@ public:
 
     [[nodiscard]] virtual StateEnum getGameStateEnum() const = 0;
     [[nodiscard]] virtual std::string getGameStateName() const = 0;
+    [[nodiscard]] virtual std::unique_ptr<IStateGame> clone() const = 0;
     virtual void introduction(GameRouter& game) = 0;
     virtual void menu(GameRouter& game) = 0;
     virtual void game(GameRouter& game) = 0;
@@ -25,8 +26,11 @@ public:
 class InitialSG final : public IStateGame {
 public:
     InitialSG() = default;
+
     [[nodiscard]] StateEnum getGameStateEnum() const override { return StateEnum::Initial; }
     [[nodiscard]] std::string getGameStateName() const override { return "Initial"; }
+    [[nodiscard]] std::unique_ptr<IStateGame> clone() const override { return std::make_unique<InitialSG>(*this); }
+
     void introduction(GameRouter& game) override; // Declaração, implementação abaixo
     void menu(GameRouter& game) override { std::cout << "It is not possible to select menu from initial state" << std::endl; }
     void game(GameRouter& game) override { std::cout << "It is not possible to select game from initial state" << std::endl; }
@@ -38,8 +42,11 @@ public:
 class IntroductionSG final : public IStateGame {
 public:
     IntroductionSG() = default;
+
     [[nodiscard]] StateEnum getGameStateEnum() const override { return StateEnum::Introduction; }
     [[nodiscard]] std::string getGameStateName() const override { return "Introduction"; }
+    [[nodiscard]] std::unique_ptr<IStateGame> clone() const override { return std::make_unique<IntroductionSG>(*this); }
+
     void introduction(GameRouter& game) override { std::cout << "It is not possible to select introduction from introduction state" << std::endl; }
     void menu(GameRouter& game) override; // Declaração, implementação abaixo
     void game(GameRouter& game) override { std::cout << "It is not possible to game from introduction state" << std::endl; }
@@ -51,8 +58,11 @@ public:
 class MenuSG final : public IStateGame {
 public:
     MenuSG() = default;
+
     [[nodiscard]] StateEnum getGameStateEnum() const override { return StateEnum::Menu; }
     [[nodiscard]] std::string getGameStateName() const override { return "Menu"; }
+    [[nodiscard]] std::unique_ptr<IStateGame> clone() const override { return std::make_unique<MenuSG>(*this); }
+
     void introduction(GameRouter& game) override { std::cout << "It is not possible to select introduction from menu state" << std::endl; }
     void menu(GameRouter& game) override { std::cout << "It is not possible to select menu from menu state" << std::endl; }
     void game(GameRouter& game) override; // Declaração, implementação abaixo
@@ -64,8 +74,11 @@ public:
 class GameSG final : public IStateGame {
 public:
     GameSG() = default;
+
     [[nodiscard]] StateEnum getGameStateEnum() const override { return StateEnum::Game; }
     [[nodiscard]] std::string getGameStateName() const override { return "Game"; }
+    [[nodiscard]] std::unique_ptr<IStateGame> clone() const override { return std::make_unique<GameSG>(*this); }
+
     void introduction(GameRouter& game) override { std::cout << "It is not possible to select introduction from game state" << std::endl; }
     void menu(GameRouter& game) override; // Declaração, implementação abaixo
     void game(GameRouter& game) override { std::cout << "It is not possible to select game from game state" << std::endl; }
@@ -77,8 +90,11 @@ public:
 class GameOverSG final : public IStateGame {
 public:
     GameOverSG() = default;
+
     [[nodiscard]] StateEnum getGameStateEnum() const override { return StateEnum::GameOver; }
     [[nodiscard]] std::string getGameStateName() const override { return "GameOver"; }
+    [[nodiscard]] std::unique_ptr<IStateGame> clone() const override { return std::make_unique<GameOverSG>(*this); }
+
     void introduction(GameRouter& game) override { std::cout << "It is not possible to select introduction from game over state" << std::endl; }
     void menu(GameRouter& game) override; // Declaração, implementação abaixo
     void game(GameRouter& game) override { std::cout << "It is not possible to select game from game over state" << std::endl; }
@@ -90,8 +106,11 @@ public:
 class RecordSG final : public IStateGame {
 public:
     RecordSG() = default;
+
     [[nodiscard]] StateEnum getGameStateEnum() const override { return StateEnum::Record; }
     [[nodiscard]] std::string getGameStateName() const override { return "Record"; }
+    [[nodiscard]] std::unique_ptr<IStateGame> clone() const override { return std::make_unique<RecordSG>(*this); }
+
     void introduction(GameRouter& game) override { std::cout << "It is not possible to select introduction from record state" << std::endl; }
     void menu(GameRouter& game) override; // Declaração, implementação abaixo
     void game(GameRouter& game) override { std::cout << "It is not possible to select game from record state" << std::endl; }
@@ -103,8 +122,11 @@ public:
 class ExitSG final : public IStateGame {
 public:
     ExitSG() = default;
+
     [[nodiscard]] StateEnum getGameStateEnum() const override { return StateEnum::Exit; }
     [[nodiscard]] std::string getGameStateName() const override { return "Exit"; }
+    [[nodiscard]] std::unique_ptr<IStateGame> clone() const override { return std::make_unique<ExitSG>(*this); }
+
     void introduction(GameRouter& game) override { std::cout << "It is not possible to select introduction from exit state" << std::endl; }
     void menu(GameRouter& game) override { std::cout << "It is not possible to select menu from exit state" << std::endl; }
     void game(GameRouter& game) override { std::cout << "It is not possible to select game from exit state" << std::endl; }
@@ -114,37 +136,37 @@ public:
 };
 
 inline void InitialSG::introduction(GameRouter& game) {
-    game.setState(std::make_unique<IntroductionSG>());
+    game.setNextState(std::make_unique<IntroductionSG>());
 }
 
 inline void IntroductionSG::menu(GameRouter& game) {
-    game.setState(std::make_unique<MenuSG>());
+    game.setNextState(std::make_unique<MenuSG>());
 }
 
 inline void MenuSG::game(GameRouter& game) {
-    game.setState(std::make_unique<GameSG>());
+    game.setNextState(std::make_unique<GameSG>());
 }
 
 inline void MenuSG::record(GameRouter& game) {
-    game.setState(std::make_unique<RecordSG>());
+    game.setNextState(std::make_unique<RecordSG>());
 }
 
 inline void MenuSG::exit(GameRouter& game) {
-    game.setState(std::make_unique<ExitSG>());
+    game.setNextState(std::make_unique<ExitSG>());
 }
 
 inline void GameSG::menu(GameRouter& game) {
-    game.setState(std::make_unique<MenuSG>());
+    game.setNextState(std::make_unique<MenuSG>());
 }
 
 inline void GameSG::gameOver(GameRouter& game) {
-    game.setState(std::make_unique<GameOverSG>());
+    game.setNextState(std::make_unique<GameOverSG>());
 }
 
 inline void GameOverSG::menu(GameRouter& game) {
-    game.setState(std::make_unique<MenuSG>());
+    game.setNextState(std::make_unique<MenuSG>());
 }
 
 inline void RecordSG::menu(GameRouter& game) {
-    game.setState(std::make_unique<MenuSG>());
+    game.setNextState(std::make_unique<MenuSG>());
 }
