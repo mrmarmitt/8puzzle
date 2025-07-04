@@ -3,6 +3,7 @@
 #include <chrono>
 #include <iomanip>
 #include <string>
+#include <sstream>
 
 GamePlay::GamePlay(): m_startedAt(std::chrono::system_clock::now()){}
 
