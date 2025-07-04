@@ -13,7 +13,7 @@ FPSManager::FPSManager(int targetFPS) :
 }
 
 bool FPSManager::shouldRender() {
-    auto now = steady_clock::now();
+    const auto now = steady_clock::now();
     auto elapsed = now - lastFrameTime;
 
     if (elapsed >= frameTimeNanos) {
@@ -39,6 +39,6 @@ int FPSManager::getCurrentFPS() const {
     return currentFPS;
 }
 
-void FPSManager::cleanup() const {
+void FPSManager::cleanup() {
     std::cout << "FPSManager: cleanup" << std::endl;
 }

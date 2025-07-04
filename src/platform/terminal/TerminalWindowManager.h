@@ -2,7 +2,7 @@
 
 #include <windows.h>
 
-#include "platform/IWindowManager.h"
+#include "../../8puzzle/engine/IWindowManager.h"
 
 class TerminalWindowManager : public IWindowManager {
     HANDLE m_hConsole;

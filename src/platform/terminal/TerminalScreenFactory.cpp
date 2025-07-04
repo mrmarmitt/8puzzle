@@ -1,14 +1,14 @@
 #include "TerminalScreenFactory.h"
 
-#include "8puzzle/domain/state/StateEnum.h"
-#include "ExitScreen.h"
-#include "GameOverScreen.h"
-#include "GameScreen.h"
-#include "InitialScreen.h"
-#include "IntroductionScreen.h"
-#include "MenuScreen.h"
-#include "RecordScreen.h"
-#include "platform/ScreenContainer.h"
+#include "../../8puzzle/engine/ScreenContainer.h"
+#include "8puzzle/game/state/StateEnum.h"
+#include "screen/ExitScreen.h"
+#include "screen/GameOverScreen.h"
+#include "screen/GameScreen.h"
+#include "screen/InitialScreen.h"
+#include "screen/IntroductionScreen.h"
+#include "screen/MenuScreen.h"
+#include "screen/RecordScreen.h"
 
 void TerminalScreenFactory::populateTerminalScreens(ScreenContainer& container, GameRouter& gameRouter) {
     static InitialScreen initialScreen(gameRouter);
@@ -19,12 +19,12 @@ void TerminalScreenFactory::populateTerminalScreens(ScreenContainer& container, 
     static RecordScreen recordScreen(gameRouter);
     static ExitScreen exitScreen(gameRouter);
 
-    container.registerScreen(StateEnum::Initial, &initialScreen);
-    container.registerScreen(StateEnum::Introduction, &introductionScreen);
-    container.registerScreen(StateEnum::Menu, &menuScreen);
-    container.registerScreen(StateEnum::Game, &gameScreen);
-    container.registerScreen(StateEnum::GameOver, &gameOverScreen);
-    container.registerScreen(StateEnum::Record, &recordScreen);
-    container.registerScreen(StateEnum::Exit, &exitScreen);
+    container.registerScreen("initial", &initialScreen);
+    container.registerScreen("introduction", &introductionScreen);
+    container.registerScreen("menu", &menuScreen);
+    container.registerScreen("game", &gameScreen);
+    container.registerScreen("gameOver", &gameOverScreen);
+    container.registerScreen("record", &recordScreen);
+    container.registerScreen("exit", &exitScreen);
 
 }

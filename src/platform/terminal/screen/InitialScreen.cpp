@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "8puzzle/domain/GameRouter.h"
+#include "8puzzle/game/GameRouter.h"
 
 void InitialScreen::draw() {
     std::cout << "InitialScreen: draw" << std::endl;

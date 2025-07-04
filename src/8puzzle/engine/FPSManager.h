@@ -16,5 +16,5 @@ public:
 
     bool shouldRender();
     int getCurrentFPS() const;
-    void cleanup() const;
+    static void cleanup() ;
 };

@@ -7,7 +7,7 @@
 enum class StateEnum;
 class IScreen;
 class ScreenContainer {
-    std::unordered_map<StateEnum, IScreen*> m_screens;
+    std::unordered_map<std::string, IScreen*> m_screens;
 
     ScreenContainer() = default;
 public:
@@ -19,11 +19,11 @@ public:
         return instance;
     }
 
-    void registerScreen(const StateEnum name, IScreen* screen) {
+    void registerScreen(const std::string& name, IScreen* screen) {
         m_screens[name] = screen;
     }
 
-    IScreen& getScreen(const StateEnum name) {
+    IScreen& getScreen(const std::string& name) {
         auto it = m_screens.find(name);
 
         if (it != m_screens.end()) {

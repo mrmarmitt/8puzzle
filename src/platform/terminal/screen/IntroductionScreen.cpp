@@ -5,7 +5,7 @@
 #include <iostream>
 #include <thread>
 
-#include "8puzzle/domain/GameRouter.h"
+#include "8puzzle/game/GameRouter.h"
 
 void IntroductionScreen::draw() {
     const std::string title = R"(

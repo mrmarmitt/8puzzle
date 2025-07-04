@@ -1,11 +1,10 @@
 #include <iostream>
 
-#include "8puzzle/core/Board.h"
-#include "platform/EngineManager.h"
-#include "platform/FPSManager.h"
+#include "8puzzle/engine/EngineManager.h"
+#include "8puzzle/engine/FPSManager.h"
 
-#include "8puzzle/domain/GameRouter.h"
-#include "platform/ScreenContainer.h"
+#include "8puzzle/engine/ScreenContainer.h"
+#include "8puzzle/game/GameRouter.h"
 #include "platform/terminal/TerminalScreenFactory.h"
 #include "platform/terminal/TerminalWindowManager.h"
 

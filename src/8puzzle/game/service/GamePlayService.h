@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-#include "8puzzle/domain/GamePlay.h"
+#include "8puzzle/game/GamePlay.h"
 
 class GamePlayService {
     //repository .json para ser

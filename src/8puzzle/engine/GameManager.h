@@ -1,10 +1,10 @@
 #pragma once
-#include "8puzzle/domain/GameRouter.h"
+#include "8puzzle/game/GameRouter.h"
 
 class GameManager final {
-    std::unique_ptr<GameRouter> m_gameRouter;
+    std::unique_ptr<IRouter> m_gameRouter;
 public:
-    explicit GameManager(GameRouter& gameRouter) : m_gameRouter(&gameRouter) {}
+    explicit GameManager(IRouter& gameRouter) : m_gameRouter(&gameRouter) {}
     ~GameManager();
 
     void onEnter() const;

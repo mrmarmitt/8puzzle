@@ -4,8 +4,8 @@
 
 #include <iostream>
 
-#include "8puzzle/domain/GameRouter.h"
-#include "platform/ServiceContainer.h"
+#include "../../../8puzzle/engine/ServiceContainer.h"
+#include "8puzzle/game/GameRouter.h"
 
 GameOverScreen::GameOverScreen(GameRouter& gameRouter) :
     IScreen(gameRouter),

@@ -1,12 +1,12 @@
 #include "MenuScreen.h"
 
-#include <windows.h>
 #include <conio.h>
+#include <windows.h>
 #include <iostream>
 #include <vector>
 
-#include "8puzzle/domain/GameRouter.h"
-#include "platform/ServiceContainer.h"
+#include "../../../8puzzle/engine/ServiceContainer.h"
+#include "8puzzle/game/GameRouter.h"
 
 MenuScreen::MenuScreen(GameRouter& gameRouter) :
     IScreen(gameRouter),

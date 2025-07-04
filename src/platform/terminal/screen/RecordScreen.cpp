@@ -4,9 +4,9 @@
 #include <iostream>
 #include <vector>
 
-#include "8puzzle/domain/GameRouter.h"
-#include "8puzzle/service/RecordService.h"
-#include "platform/ServiceContainer.h"
+#include "../../../8puzzle/engine/ServiceContainer.h"
+#include "8puzzle/game/GameRouter.h"
+#include "8puzzle/game/service/RecordService.h"
 
 RecordScreen::RecordScreen(GameRouter& gameRouter) :
     IScreen(gameRouter),

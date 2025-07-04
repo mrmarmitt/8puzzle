@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include "IGameManager.h"
-
 EngineManager::EngineManager(std::unique_ptr<IWindowManager> windowManager,
                                  std::unique_ptr<GameManager> gameManager,
                                  std::unique_ptr<FPSManager> fpsManager) :

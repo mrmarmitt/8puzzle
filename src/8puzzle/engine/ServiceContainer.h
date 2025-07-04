@@ -1,9 +1,9 @@
 #pragma once
 #include <memory>
 
-#include "8puzzle/service/ConfigurationService.h"
-#include "8puzzle/service/GamePlayService.h"
-#include "8puzzle/service/RecordService.h"
+#include "8puzzle/game/service/ConfigurationService.h"
+#include "8puzzle/game/service/GamePlayService.h"
+#include "8puzzle/game/service/RecordService.h"
 
 class ServiceContainer {
     std::shared_ptr<RecordService> m_recordService;

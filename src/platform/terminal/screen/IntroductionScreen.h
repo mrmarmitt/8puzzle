@@ -1,5 +1,5 @@
 #pragma once
-#include "platform/IScreen.h"
+#include "../../../8puzzle/engine/IScreen.h"
 
 class IntroductionScreen final : public IScreen {
 public:

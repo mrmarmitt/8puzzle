@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "8puzzle/domain/Record.h"
+#include "8puzzle/game/Record.h"
 
 class RecordService {
     std::vector<Record> m_records;

@@ -3,8 +3,8 @@
 #include <memory>
 #include <string>
 
-#include "8puzzle/domain/Record.h"
-#include "platform/IScreen.h"
+#include "../../../8puzzle/engine/IScreen.h"
+#include "8puzzle/game/Record.h"
 
 class RecordService;
 class GamePlayService;

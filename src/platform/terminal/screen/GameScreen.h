@@ -3,8 +3,8 @@
 // #include <chrono>
 #include <memory>
 
+#include "../../../8puzzle/engine/IScreen.h"
 #include "8puzzle/core/Board.h"
-#include "platform/IScreen.h"
 
 class GamePlayService;
 class GameScreen final : public IScreen {

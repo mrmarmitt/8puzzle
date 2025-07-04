@@ -6,8 +6,8 @@
 #include <iostream>
 #include <sstream>
 
-#include "8puzzle/domain/GameRouter.h"
-#include "platform/ServiceContainer.h"
+#include "../../../8puzzle/engine/ServiceContainer.h"
+#include "8puzzle/game/GameRouter.h"
 
 GameScreen::GameScreen(GameRouter& gameRouter) :
     IScreen(gameRouter),

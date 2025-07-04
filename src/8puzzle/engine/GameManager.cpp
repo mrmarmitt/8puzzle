@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-#include "8puzzle/domain/GameRouter.h"
-#include "platform/IScreen.h"
+#include "8puzzle/game/GameRouter.h"
+#include "IScreen.h"
 
 GameManager::~GameManager() = default;
 
@@ -38,7 +38,7 @@ void GameManager::onExit() const {
 }
 
 bool GameManager::shouldExist() const {
-    return m_gameRouter->getCurrentStateGameEnum() == StateEnum::Exit;
+    return m_gameRouter->getCurrentStateGameCode() == "exit";
 }
 
 void GameManager::cleanup() {

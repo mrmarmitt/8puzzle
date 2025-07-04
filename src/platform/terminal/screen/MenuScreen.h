@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "platform/IScreen.h"
+#include "../../../8puzzle/engine/IScreen.h"
 
 class GamePlayService;
 class MenuScreen final : public IScreen {
