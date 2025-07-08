@@ -1,18 +1,18 @@
-#include "RecordScreen.h"
 #include <conio.h>
 #include <iomanip>
 #include <iostream>
 #include <vector>
+#include "RecordScene.h"
 
 #include "../../../8puzzle/engine/ServiceContainer.h"
 #include "8puzzle/game/GameRouter.h"
 #include "8puzzle/game/service/RecordService.h"
 
-RecordScreen::RecordScreen(GameRouter& gameRouter) :
-    IScreen(gameRouter),
+RecordScene::RecordScene(GameRouter& gameRouter) :
+    IScene(gameRouter),
     m_recordService(ServiceContainer::get().getRecordService()) {}
 
-void RecordScreen::draw() {
+void RecordScene::draw() {
     std::cout << "=== RECORDES ===\n";
     std::cout << "(T)empo | (M)ovimentos | (ESC) Voltar\n\n";
 
@@ -43,7 +43,7 @@ void RecordScreen::draw() {
     std::cout << std::endl;
 }
 
-void RecordScreen::input() {
+void RecordScene::input() {
     if (_kbhit()) {
         switch (int key = _getch()) {
             case 't':

@@ -2,11 +2,11 @@
 
 #include <memory>
 
-#include "../../../8puzzle/engine/IScreen.h"
+#include "../../../8puzzle/engine/IScene.h"
 #include "8puzzle/game/core/Board.h"
 
 class GamePlayService;
-class GameScreen final : public IScreen {
+class GameScene final : public IScene {
     std::shared_ptr<GamePlayService> m_gamePlayService;
 
     Board m_board;
@@ -19,7 +19,7 @@ class GameScreen final : public IScreen {
 
 public:
 
-    explicit GameScreen(GameRouter& gameRouter);
+    explicit GameScene(GameRouter& gameRouter);
 
     void onEnter() override {}
     void draw() override;

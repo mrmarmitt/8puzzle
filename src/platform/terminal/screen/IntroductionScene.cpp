@@ -1,4 +1,4 @@
-#include "IntroductionScreen.h"
+#include "IntroductionScene.h"
 
 #include <conio.h>
 #include <chrono>
@@ -7,7 +7,7 @@
 
 #include "8puzzle/game/GameRouter.h"
 
-void IntroductionScreen::draw() {
+void IntroductionScene::draw() {
     const std::string title = R"(
       ____       ____  _   _ _     _
      |  _ \ ___ |  _ \| | | (_)___| |__
@@ -26,7 +26,7 @@ void IntroductionScreen::draw() {
     getGameRouter().menu();
 }
 
-void IntroductionScreen::input() {
+void IntroductionScene::input() {
     if (_kbhit()) {
         int ch = _getch();
         if (ch == '\r') {

@@ -1,11 +1,11 @@
-#include "ExitScreen.h"
+#include "ExitScene.h"
 
 #include <iostream>
 
-void ExitScreen::draw() {
+void ExitScene::draw() {
     std::cout << "ExitScreen: draw" << std::endl;
 }
 
-void ExitScreen::input() {
+void ExitScene::input() {
 
 }

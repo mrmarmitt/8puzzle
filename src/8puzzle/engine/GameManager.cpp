@@ -3,12 +3,12 @@
 #include <iostream>
 
 #include "8puzzle/game/GameRouter.h"
-#include "IScreen.h"
+#include "IScene.h"
 
 GameManager::~GameManager() = default;
 
 void GameManager::onEnter() const {
-    IScreen& screen = m_gameRouter->getCurrentCachedScreen();
+    IScene& screen = m_gameRouter->getCurrentCachedScreen();
 
     if (!screen.isOnEnterExecuted()) {
         screen.onEnter();
@@ -17,20 +17,20 @@ void GameManager::onEnter() const {
 }
 
 void GameManager::render() const {
-    IScreen& screen = m_gameRouter->getCurrentCachedScreen();
+    IScene& screen = m_gameRouter->getCurrentCachedScreen();
 
     screen.draw();
 }
 
 void GameManager::input() const {
-    IScreen& screen = m_gameRouter->getCurrentCachedScreen();
+    IScene& screen = m_gameRouter->getCurrentCachedScreen();
 
     screen.input();
 }
 
 void GameManager::onExit() const {
     if (m_gameRouter->hasNextScreen()) {
-        IScreen& screen = m_gameRouter->getCurrentCachedScreen();
+        IScene& screen = m_gameRouter->getCurrentCachedScreen();
         screen.onExit();
         screen.resetConst();
         m_gameRouter->goToNextScreen();

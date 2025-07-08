@@ -3,17 +3,17 @@
 class GamePlay;
 class GameRouter;
 
-class IScreen {
+class IScene {
 
     GameRouter& m_gameRouter;
 
     bool isEnterExecuted = false;
 
 public:
-    explicit IScreen(GameRouter& gameRouter) :
+    explicit IScene(GameRouter& gameRouter) :
         m_gameRouter(gameRouter){}
 
-    virtual ~IScreen() = default;
+    virtual ~IScene() = default;
 
     [[nodiscard]] GameRouter& getGameRouter() const { return m_gameRouter;}
 

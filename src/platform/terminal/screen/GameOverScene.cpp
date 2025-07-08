@@ -1,4 +1,4 @@
-#include "GameOverScreen.h"
+#include "GameOverScene.h"
 
 #include <conio.h>
 
@@ -7,20 +7,20 @@
 #include "../../../8puzzle/engine/ServiceContainer.h"
 #include "8puzzle/game/GameRouter.h"
 
-GameOverScreen::GameOverScreen(GameRouter& gameRouter) :
-    IScreen(gameRouter),
+GameOverScene::GameOverScene(GameRouter& gameRouter) :
+    IScene(gameRouter),
     m_gamePlayService(ServiceContainer::get().getGameService()),
     m_recordService(ServiceContainer::get().getRecordService()),
     m_isRecord(false){}
 
-void GameOverScreen::onEnter() {
+void GameOverScene::onEnter() {
     auto record = buildRecord();
     if (m_recordService->isNewRecord(record, 10)) {
         m_isRecord = m_recordService->isNewRecord(record, 10);
     }
 }
 
-void GameOverScreen::draw() {
+void GameOverScene::draw() {
     if (m_isRecord) {
         std::cout << "Parabens! Voce fez um novo recorde!\n";
         std::cout << "Digite seu nome para registrar: " << m_name << std::flush;
@@ -28,7 +28,7 @@ void GameOverScreen::draw() {
         std::cout << "Voce nao bateu o recorde. Pressione Enter para voltar ao menu.\n";
     }
 }
-void GameOverScreen::input() {
+void GameOverScene::input() {
     if (!_kbhit()) return;
 
     const int key = _getch();
@@ -60,18 +60,18 @@ void GameOverScreen::input() {
     }
 }
 
-void GameOverScreen::onExit() {
+void GameOverScene::onExit() {
     m_isRecord = false;
     m_name = {};
 }
 
-Record GameOverScreen::buildRecord() const {
+Record GameOverScene::buildRecord() const {
     const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
     auto record = Record(gamePlay->getNumberOfMoves(), gamePlay->getDurationMillis());
     return record;
 }
 
-Record GameOverScreen::buildRecordAndAssignRecord() const {
+Record GameOverScene::buildRecordAndAssignRecord() const {
     const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
     auto record = Record(gamePlay->getNumberOfMoves(), gamePlay->getDurationMillis());
     record.assignRecord(m_name, gamePlay->getStartedAtAsString());

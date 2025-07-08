@@ -1,4 +1,4 @@
-#include "GameScreen.h"
+#include "GameScene.h"
 
 #include <conio.h>
 #include <chrono>
@@ -9,12 +9,12 @@
 #include "../../../8puzzle/engine/ServiceContainer.h"
 #include "8puzzle/game/GameRouter.h"
 
-GameScreen::GameScreen(GameRouter& gameRouter) :
-    IScreen(gameRouter),
+GameScene::GameScene(GameRouter& gameRouter) :
+    IScene(gameRouter),
     m_gamePlayService(ServiceContainer::get().getGameService()){}
 
 
-void GameScreen::draw() {
+void GameScene::draw() {
     const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
     std::cout << printBoard() << std::endl;
 
@@ -24,7 +24,7 @@ void GameScreen::draw() {
     }
 }
 
-void GameScreen::input() {
+void GameScene::input() {
     const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
     if (_kbhit()) {
         const int key = _getch();
@@ -44,12 +44,12 @@ void GameScreen::input() {
     }
 }
 
-void GameScreen::onExit() {
+void GameScene::onExit() {
     std::cout << "GAME_SCREEN PASSOU AQUI" << std::endl;
     m_board.createRandomGame();
 }
 
-std::string GameScreen::printBoard() const {
+std::string GameScene::printBoard() const {
     const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
     std::ostringstream result;
 

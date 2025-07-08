@@ -5,11 +5,11 @@
 #include "8puzzle/game/state/StateEnum.h"
 // #include "8puzzle/game/state/StateGameOld.d"
 #include "IState.h"
-#include "ScreenContainer.h"
+#include "SceneContainer.h"
 
 class IState;
-class IScreen;
-class ScreenContainer;
+class IScene;
+class SceneContainer;
 
 class IRouter {
 
@@ -35,9 +35,9 @@ public:
         return m_currentState->getCode();
     }
 
-    [[nodiscard]] virtual IScreen& getCurrentCachedScreen() const {
-        ScreenContainer& container = ScreenContainer::get();
-        return container.getScreen(m_currentState->getCode());
+    [[nodiscard]] virtual IScene& getCurrentCachedScreen() const {
+        SceneContainer& container = SceneContainer::get();
+        return container.getScene(m_currentState->getCode());
     }
 
     [[nodiscard]] virtual  bool hasNextScreen() const {

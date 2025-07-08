@@ -1,4 +1,4 @@
-#include "MenuScreen.h"
+#include "MenuScene.h"
 
 #include <conio.h>
 #include <windows.h>
@@ -8,11 +8,11 @@
 #include "../../../8puzzle/engine/ServiceContainer.h"
 #include "8puzzle/game/GameRouter.h"
 
-MenuScreen::MenuScreen(GameRouter& gameRouter) :
-    IScreen(gameRouter),
+MenuScene::MenuScene(GameRouter& gameRouter) :
+    IScene(gameRouter),
     m_gamePlayService(ServiceContainer::get().getGameService()){}
 
-void MenuScreen::draw() {
+void MenuScene::draw() {
     std::cout << "=== MENU PRINCIPAL ===" << std::endl << std::endl;
 
     const std::vector<std::string> options = {"Novo Jogo", "Recorde", "Configuracoes", "Sair"};
@@ -28,7 +28,7 @@ void MenuScreen::draw() {
     }
 }
 
-void MenuScreen::input() {
+void MenuScene::input() {
     if (_kbhit()) {
         const int key = _getch();
         constexpr int numOptions = 4;

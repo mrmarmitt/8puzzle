@@ -5,7 +5,7 @@
 #include "state/StateEnum.h"
 
 class StateGameFlow;
-class IScreen;
+class IScene;
 class StateGameOld;
 
 class GameRouter final : public IRouter {
