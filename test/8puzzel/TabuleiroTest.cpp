@@ -1,8 +1,8 @@
 #include <string>
 #include <vector>
 
-#include "8puzzle/core/Board.h"
-#include "8puzzle/core/Tile.h"
+#include "8puzzle/game/core/Board.h"
+#include "8puzzle/game/core/Tile.h"
 #include "gtest/gtest.h"
 
 // Cria um tabuleiro resolvido com 1-8 e 0 no final

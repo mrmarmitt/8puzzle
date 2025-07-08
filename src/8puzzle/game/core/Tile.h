@@ -9,9 +9,9 @@ public:
     Tile();
     Tile(int id, const std::string& description);
 
-    int getId() const;
-    const std::string& getDescription() const;
-    bool isEmpty() const;
+    [[nodiscard]] int getId() const;
+    [[nodiscard]] const std::string& getDescription() const;
+    [[nodiscard]] bool isEmpty() const;
 
-    std::string toString() const;
+    [[nodiscard]] std::string toString() const;
 };
