@@ -4,6 +4,7 @@
 
 #include "../../../8puzzle/engine/IScene.h"
 
+class GameRouter;
 class RecordService;
 
 enum class RecordSortType {
@@ -12,11 +13,12 @@ enum class RecordSortType {
 };
 
 class RecordScene final : public IScene {
-    RecordSortType m_sortType = RecordSortType::ByTime;
+    std::shared_ptr<GameRouter> m_gameRouter;
     std::shared_ptr<RecordService> m_recordService;
+    RecordSortType m_sortType = RecordSortType::ByTime;
 
 public:
-    explicit RecordScene(GameRouter& gameRouter);
+    explicit RecordScene();
 
     void onEnter() override {}
     void draw() override;

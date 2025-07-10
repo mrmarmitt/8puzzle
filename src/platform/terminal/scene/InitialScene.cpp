@@ -2,9 +2,12 @@
 
 #include <iostream>
 
-#include "8puzzle/game/GameRouter.h"
+#include "8puzzle/engine/ServiceContainer.h"
+
+InitialScene::InitialScene() :
+    m_gameRouter(ServiceContainer::get().getRouter()) {}
 
 void InitialScene::draw() {
     std::cout << "InitialScreen: draw" << std::endl;
-    getGameRouter().introduction();
+    m_gameRouter->introduction();
 }

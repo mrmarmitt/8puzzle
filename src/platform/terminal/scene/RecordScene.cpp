@@ -8,8 +8,8 @@
 #include "8puzzle/game/GameRouter.h"
 #include "8puzzle/game/service/RecordService.h"
 
-RecordScene::RecordScene(GameRouter& gameRouter) :
-    IScene(gameRouter),
+RecordScene::RecordScene() :
+    m_gameRouter(ServiceContainer::get().getRouter()),
     m_recordService(ServiceContainer::get().getRecordService()) {}
 
 void RecordScene::draw() {
@@ -55,7 +55,7 @@ void RecordScene::input() {
                 m_sortType = RecordSortType::ByMoves;
                 break;
             case 27: // ESC
-                getGameRouter().menu();
+                m_gameRouter->menu();
                 break;
             default:;
         }

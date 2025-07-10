@@ -2,11 +2,8 @@
 #include <memory>
 
 #include "8puzzle/engine/IRouter.h"
-#include "state/StateEnum.h"
 
 class StateGameFlow;
-class IScene;
-class StateGameOld;
 
 class GameRouter final : public IRouter {
 

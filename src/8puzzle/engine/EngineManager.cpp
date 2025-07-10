@@ -34,7 +34,7 @@ void EngineManager::cleanup() const {
     std::cout << "EngineManager: cleanup" << std::endl;
 
      if (m_gameManager) {
-         m_gameManager->cleanup();
+         GameManager::cleanup();
      }
 
      if (m_windowManager) {
@@ -42,7 +42,7 @@ void EngineManager::cleanup() const {
      }
 
      if (m_fpsManager) {
-         m_fpsManager->cleanup();
+         FPSManager::cleanup();
      }
 }
 
@@ -55,6 +55,7 @@ void EngineManager::run() {
             m_gameManager->input();
             m_gameManager->render();
             m_gameManager->onExit();
+
 
             m_isRunning = !m_gameManager->shouldExist();
         }

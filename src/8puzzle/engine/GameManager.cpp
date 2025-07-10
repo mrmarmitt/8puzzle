@@ -2,9 +2,10 @@
 
 #include <iostream>
 
-#include "8puzzle/game/GameRouter.h"
 #include "IScene.h"
+#include "ServiceContainer.h"
 
+GameManager::GameManager() : m_gameRouter(ServiceContainer::get().getRouter()){}
 GameManager::~GameManager() = default;
 
 void GameManager::onEnter() const {
@@ -32,7 +33,6 @@ void GameManager::onExit() const {
     if (m_gameRouter->hasNextScreen()) {
         IScene& screen = m_gameRouter->getCurrentCachedScreen();
         screen.onExit();
-        screen.resetConst();
         m_gameRouter->goToNextScreen();
     }
 }

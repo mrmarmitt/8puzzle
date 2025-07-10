@@ -15,6 +15,10 @@ endif()
 
 project ("8Puzzle")
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 # Inclui todos os diretórios de headers dentro de src/
 include_directories(src)
 
@@ -71,7 +75,7 @@ target_link_libraries(8Puzzle
 enable_testing()
 
 # Adiciona seus testes
-file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
+file(GLOB_RECURSE TEST_SOURCES "test/*/*.cpp")
 add_executable(RunTests ${TEST_SOURCES})
 target_link_libraries(RunTests
   PRIVATE

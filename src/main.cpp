@@ -15,15 +15,14 @@ int main()
 {
     std::cout << "Iniciando o jogo..." << std::endl;
 
-    const auto gameRouter = std::make_unique<GameRouter>();
     SceneContainer& container = SceneContainer::get();
 
-    TerminalSceneFactory::populateTerminalScreens(container, *gameRouter);
+    TerminalSceneFactory::populateTerminalScreens(container);
 
 
     auto windowManager = std::make_unique<TerminalWindowManager>();
     auto fpsManager = std::make_unique<FPSManager>(30);
-    auto gameManager = std::make_unique<GameManager>(*gameRouter);
+    auto gameManager = std::make_unique<GameManager>();
 
     EngineManager engineManager(
         std::move(windowManager),

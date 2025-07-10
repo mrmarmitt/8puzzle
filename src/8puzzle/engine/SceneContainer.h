@@ -1,13 +1,17 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <stdexcept>
 #include <unordered_map>
 
+#include "IScene.h"
+
 enum class StateEnum;
-class IScene;
+
 class SceneContainer {
-    std::unordered_map<std::string, IScene*> m_scenes;
+    std::unordered_map<std::string, std::unique_ptr<IScene>> m_scenes;
+    std::unordered_map<std::string, std::function<std::unique_ptr<IScene>()>> m_factories;
 
     SceneContainer() = default;
 public:
@@ -19,16 +23,32 @@ public:
         return instance;
     }
 
-    void registerScene(const std::string& name, IScene* scene) {
-        m_scenes[name] = scene;
+    void registerFactory(const std::string& name, std::function<std::unique_ptr<IScene>()> factory) {
+        m_factories[name] = std::move(factory);
     }
 
     IScene& getScene(const std::string& name) {
-        auto it = m_scenes.find(name);
-
+        // Se já estiver instanciada, retorna
+        const auto it = m_scenes.find(name);
         if (it != m_scenes.end()) {
             return *(it->second);
         }
-        throw std::runtime_error("Screen does not exist");
+
+        // Caso contrário, instancia sob demanda via factory
+        const auto factoryIt = m_factories.find(name);
+        if (factoryIt != m_factories.end()) {
+            m_scenes[name] = factoryIt->second();
+            return *(m_scenes[name]);
+        }
+
+        throw std::runtime_error("Scene not found: " + name);
+    }
+
+    void unloadScene(const std::string& name) {
+        m_scenes.erase(name);
+    }
+
+    void unloadAll() {
+        m_scenes.clear();
     }
 };

@@ -9,8 +9,8 @@
 #include "../../../8puzzle/engine/ServiceContainer.h"
 #include "8puzzle/game/GameRouter.h"
 
-GameScene::GameScene(GameRouter& gameRouter) :
-    IScene(gameRouter),
+GameScene::GameScene() :
+    m_gameRouter(ServiceContainer::get().getRouter()),
     m_gamePlayService(ServiceContainer::get().getGameService()){}
 
 
@@ -20,7 +20,7 @@ void GameScene::draw() {
 
     if (m_board.isSolved()) {
         gamePlay->completeGame();
-        getGameRouter().gameOver();
+        m_gameRouter->gameOver();
     }
 }
 
@@ -39,7 +39,7 @@ void GameScene::input() {
 
         if (key == 27) {
             m_gamePlayService->clear();
-            getGameRouter().menu();
+            m_gameRouter->menu();
         }
     }
 }

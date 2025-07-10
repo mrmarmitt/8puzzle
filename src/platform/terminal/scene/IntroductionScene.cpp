@@ -5,7 +5,10 @@
 #include <iostream>
 #include <thread>
 
-#include "8puzzle/game/GameRouter.h"
+#include "8puzzle/engine/ServiceContainer.h"
+
+IntroductionScene::IntroductionScene() :
+    m_gameRouter(ServiceContainer::get().getRouter()) {}
 
 void IntroductionScene::draw() {
     const std::string title = R"(
@@ -23,14 +26,14 @@ void IntroductionScene::draw() {
             std::this_thread::sleep_for(std::chrono::milliseconds(2)); // controle da velocidade
         }
     std::cout << std::endl;
-    getGameRouter().menu();
+    m_gameRouter->menu();
 }
 
 void IntroductionScene::input() {
     if (_kbhit()) {
         int ch = _getch();
         if (ch == '\r') {
-            getGameRouter().menu();
+            m_gameRouter->menu();
         }
     }
 }

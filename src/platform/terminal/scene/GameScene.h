@@ -5,8 +5,10 @@
 #include "../../../8puzzle/engine/IScene.h"
 #include "8puzzle/game/core/Board.h"
 
+class GameRouter;
 class GamePlayService;
 class GameScene final : public IScene {
+    std::shared_ptr<GameRouter> m_gameRouter;
     std::shared_ptr<GamePlayService> m_gamePlayService;
 
     Board m_board;
@@ -19,7 +21,7 @@ class GameScene final : public IScene {
 
 public:
 
-    explicit GameScene(GameRouter& gameRouter);
+    explicit GameScene();
 
     void onEnter() override {}
     void draw() override;

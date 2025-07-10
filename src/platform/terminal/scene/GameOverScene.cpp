@@ -7,14 +7,14 @@
 #include "../../../8puzzle/engine/ServiceContainer.h"
 #include "8puzzle/game/GameRouter.h"
 
-GameOverScene::GameOverScene(GameRouter& gameRouter) :
-    IScene(gameRouter),
+GameOverScene::GameOverScene() :
+    m_gameRouter(ServiceContainer::get().getRouter()),
     m_gamePlayService(ServiceContainer::get().getGameService()),
     m_recordService(ServiceContainer::get().getRecordService()),
     m_isRecord(false){}
 
 void GameOverScene::onEnter() {
-    auto record = buildRecord();
+    const auto record = buildRecord();
     if (m_recordService->isNewRecord(record, 10)) {
         m_isRecord = m_recordService->isNewRecord(record, 10);
     }
@@ -40,7 +40,7 @@ void GameOverScene::input() {
             const auto record = buildRecordAndAssignRecord();
             m_recordService->addRecord(record);
 
-            getGameRouter().menu();
+            m_gameRouter->menu();
         }
         // BACKSPACE remove caractere
         else if (key == 8 && !m_name.empty()) {
@@ -55,7 +55,7 @@ void GameOverScene::input() {
     } else {
         // Apenas espera Enter
         if (key == 13) { // ENTER
-            getGameRouter().menu();
+            m_gameRouter->menu();
         }
     }
 }

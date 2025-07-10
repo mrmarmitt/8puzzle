@@ -1,59 +1,60 @@
+#include <gtest/gtest.h>
 #include <string>
 #include <vector>
 
 #include "8puzzle/game/core/Board.h"
 #include "8puzzle/game/core/Tile.h"
-#include "gtest/gtest.h"
+
 
 // Cria um tabuleiro resolvido com 1-8 e 0 no final
 Board criarTabuleiroResolvido() {
-    std::vector<Tile> pecas;
+    std::vector<Tile> tiles;
     for (int i = 1; i <= 8; ++i) {
-        pecas.emplace_back(i, std::to_string(i));
+        tiles.emplace_back(i, std::to_string(i));
     }
-    pecas.emplace_back(); // pe�a vazia (id = 0)
-    return Board(std::move(pecas));
+    tiles.emplace_back(); // pe�a vazia (id = 0)
+    return Board(std::move(tiles));
 }
 
 // Cria tabuleiro com vazio no in�cio
 Board criarTabuleiroVazioInicio() {
-    std::vector<Tile> pecas;
-    pecas.emplace_back(); // vazio
+    std::vector<Tile> tiles;
+    tiles.emplace_back(); // vazio
     for (int i = 1; i <= 8; ++i) {
-        pecas.emplace_back(i, std::to_string(i));
+        tiles.emplace_back(i, std::to_string(i));
     }
-    return Board(std::move(pecas));
+    return Board(std::move(tiles));
 }
 
 // Teste se tabuleiro resolvido � reconhecido
 TEST(TabuleiroTest, TabuleiroResolvidoFinal) {
-    Board tab = criarTabuleiroResolvido();
-    EXPECT_TRUE(tab.isSolved());
+    const Board board = criarTabuleiroResolvido();
+    EXPECT_TRUE(board.isSolved());
 }
 
 TEST(TabuleiroTest, TabuleiroResolvidoInicio) {
-    Board tab = criarTabuleiroVazioInicio();
-    EXPECT_TRUE(tab.isSolved());
+    const Board board = criarTabuleiroVazioInicio();
+    EXPECT_TRUE(board.isSolved());
 }
 
 // Testa se pe�a � movida corretamente
 TEST(TabuleiroTest, MovePecaValida) {
     // tabuleiro: 1 2 3 4 5 6 7 0 8 (vazio em [2][1])
-    std::vector<Tile> pecas = {
+    std::vector<Tile> tiles = {
         Tile(1, "1"), Tile(2, "2"), Tile(3, "3"),
         Tile(4, "4"), Tile(5, "5"), Tile(6, "6"),
         Tile(7, "7"), Tile(0, " "), Tile(8, "8")
     };
 
-    Board tab(std::move(pecas));
+    Board board(std::move(tiles));
 
-    EXPECT_TRUE(tab.moveTile(8));
-    EXPECT_TRUE(tab.isSolved());
+    EXPECT_TRUE(board.moveTile(8));
+    EXPECT_TRUE(board.isSolved());
 }
 
 // Testa se movimento inv�lido n�o muda nada
 TEST(TabuleiroTest, NaoMovePecaInvalida) {
-    Board tab = criarTabuleiroResolvido();
-    EXPECT_FALSE(tab.moveTile(1)); // 1 n�o est� ao lado da pe�a vazia
-    EXPECT_TRUE(tab.isSolved()); // ainda est� resolvido
+    Board board = criarTabuleiroResolvido();
+    EXPECT_FALSE(board.moveTile(1)); // 1 n�o est� ao lado da pe�a vazia
+    EXPECT_TRUE(board.isSolved()); // ainda est� resolvido
 }

@@ -4,13 +4,15 @@
 
 #include "../../../8puzzle/engine/IScene.h"
 
+class GameRouter;
 class GamePlayService;
 class MenuScene final : public IScene {
+    std::shared_ptr<GameRouter> m_gameRouter;
     std::shared_ptr<GamePlayService> m_gamePlayService;
     int m_selected = 0;
 
 public:
-    explicit MenuScene(GameRouter& gameRouter);
+    explicit MenuScene();
 
     void onEnter() override {}
     void draw() override;

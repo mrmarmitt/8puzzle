@@ -1,9 +1,13 @@
 #pragma once
+#include <memory>
+
 #include "../../../8puzzle/engine/IScene.h"
 
+class GameRouter;
 class IntroductionScene final : public IScene {
+    std::shared_ptr<GameRouter> m_gameRouter;
 public:
-    explicit IntroductionScene(GameRouter& gameRouter) : IScene(gameRouter) {}
+    explicit IntroductionScene();
 
     void onEnter() override {}
     void draw() override;

@@ -2,14 +2,11 @@
 #include <memory>
 #include <string>
 
-#include "8puzzle/game/state/StateEnum.h"
-// #include "8puzzle/game/state/StateGameOld.d"
 #include "IState.h"
 #include "SceneContainer.h"
 
-class IState;
 class IScene;
-class SceneContainer;
+class IState;
 
 class IRouter {
 
@@ -46,6 +43,9 @@ public:
 
     virtual void goToNextScreen() {
         if (m_nextState) {
+            SceneContainer& container = SceneContainer::get();
+            container.unloadScene(m_currentState->getCode());
+
             m_currentState = m_nextState->clone();
         } else {
             throw std::runtime_error("No next state set!");

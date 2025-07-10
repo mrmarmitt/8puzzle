@@ -4,7 +4,6 @@
 
 #include "FPSManager.h"
 #include "GameManager.h"
-// #include "IGameManager.h"
 #include "IWindowManager.h"
 
 class EngineManager {

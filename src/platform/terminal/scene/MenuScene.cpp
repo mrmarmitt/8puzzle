@@ -8,9 +8,9 @@
 #include "../../../8puzzle/engine/ServiceContainer.h"
 #include "8puzzle/game/GameRouter.h"
 
-MenuScene::MenuScene(GameRouter& gameRouter) :
-    IScene(gameRouter),
-    m_gamePlayService(ServiceContainer::get().getGameService()){}
+MenuScene::MenuScene() :
+    m_gameRouter(ServiceContainer::get().getRouter()),
+    m_gamePlayService(ServiceContainer::get().getGameService()) {}
 
 void MenuScene::draw() {
     std::cout << "=== MENU PRINCIPAL ===" << std::endl << std::endl;
@@ -44,22 +44,22 @@ void MenuScene::input() {
                 switch (m_selected) {
                     case 0:
                         m_gamePlayService->startNewGame();
-                        getGameRouter().game();
+                        m_gameRouter->game();
                         break;
                     case 1: // Recorde
-                        getGameRouter().record();
+                        m_gameRouter->record();
                         break;
                     case 2: // Configuracoes
                         // getGameRouter().configuration();
                         break;
                     case 3: // Sair
-                        getGameRouter().exit(); // Chama o método exit na ApplicationGame
+                        m_gameRouter->exit(); // Chama o método exit na ApplicationGame
                         break;
                     default:;
                 }
                 break;
             case 27:
-                getGameRouter().exit(); // Chama o método exit na ApplicationGame
+                m_gameRouter->exit(); // Chama o método exit na ApplicationGame
                 break;
             default:
                 break;
