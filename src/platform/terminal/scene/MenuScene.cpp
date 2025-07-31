@@ -5,12 +5,13 @@
 #include <iostream>
 #include <vector>
 
-#include "../../../8puzzle/engine/ServiceContainer.h"
 #include "8puzzle/game/GameRouter.h"
+#include "8puzzle/game/service/GamePlayService.h"
 
-MenuScene::MenuScene() :
-    m_gameRouter(ServiceContainer::get().getRouter()),
-    m_gamePlayService(ServiceContainer::get().getGameService()) {}
+MenuScene::MenuScene(std::shared_ptr<GameRouter> gameRouter,
+                     std::shared_ptr<GamePlayService> gamePlayService) : m_gameRouter(std::move(gameRouter)),
+                                                                         m_gamePlayService(std::move(gamePlayService)) {
+}
 
 void MenuScene::draw() {
     std::cout << "=== MENU PRINCIPAL ===" << std::endl << std::endl;
@@ -55,7 +56,7 @@ void MenuScene::input() {
                     case 3: // Sair
                         m_gameRouter->exit(); // Chama o método exit na ApplicationGame
                         break;
-                    default:;
+                    default: ;
                 }
                 break;
             case 27:

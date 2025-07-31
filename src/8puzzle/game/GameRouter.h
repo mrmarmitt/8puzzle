@@ -1,15 +1,15 @@
 #pragma once
 #include <memory>
 
-#include "8puzzle/engine/IRouter.h"
+#include "../engine/service/RouterService.h"
 
 class StateGameFlow;
 
-class GameRouter final : public IRouter {
+class GameRouter final : public RouterService {
 
-    static StateGameFlow& castIt(const std::unique_ptr<IState>& state) ;
+    static StateGameFlow& castIt(IState& state) ;
 public:
-    GameRouter();
+    explicit GameRouter(std::shared_ptr<SceneRepository> sceneRepository);
     ~GameRouter() override;
 
     void introduction();

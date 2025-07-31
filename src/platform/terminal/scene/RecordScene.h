@@ -18,7 +18,7 @@ class RecordScene final : public IScene {
     RecordSortType m_sortType = RecordSortType::ByTime;
 
 public:
-    explicit RecordScene();
+    explicit RecordScene(std::shared_ptr<GameRouter> gameRouter, std::shared_ptr<RecordService> recordService);
 
     void onEnter() override {}
     void draw() override;

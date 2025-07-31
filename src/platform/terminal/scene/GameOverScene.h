@@ -5,10 +5,11 @@
 
 #include "../../../8puzzle/engine/IScene.h"
 #include "8puzzle/game/Record.h"
+#include "8puzzle/game/service/GamePlayService.h"
+#include "8puzzle/game/service/RecordService.h"
 
 class GameRouter;
-class RecordService;
-class GamePlayService;
+
 class GameOverScene final : public IScene {
     std::shared_ptr<GameRouter> m_gameRouter;
     std::shared_ptr<GamePlayService> m_gamePlayService;
@@ -17,13 +18,20 @@ class GameOverScene final : public IScene {
     bool m_isRecord;
 
     [[nodiscard]] Record buildRecord() const;
+
     [[nodiscard]] Record buildRecordAndAssignRecord() const;
 
 public:
-    explicit GameOverScene();
+    explicit GameOverScene(
+        std::shared_ptr<GameRouter> gameRouter,
+        std::shared_ptr<GamePlayService> gamePlayService,
+        std::shared_ptr<RecordService> recordService);
 
     void onEnter() override;
+
     void draw() override;
+
     void input() override;
+
     void onExit() override;
 };

@@ -1,17 +1,19 @@
 #include "GameOverScene.h"
 
 #include <conio.h>
-
 #include <iostream>
+#include <utility>
 
-#include "../../../8puzzle/engine/ServiceContainer.h"
 #include "8puzzle/game/GameRouter.h"
+#include "8puzzle/game/service/GamePlayService.h"
+#include "8puzzle/game/service/RecordService.h"
 
-GameOverScene::GameOverScene() :
-    m_gameRouter(ServiceContainer::get().getRouter()),
-    m_gamePlayService(ServiceContainer::get().getGameService()),
-    m_recordService(ServiceContainer::get().getRecordService()),
-    m_isRecord(false){}
+GameOverScene::GameOverScene(std::shared_ptr<GameRouter> gameRouter,
+                             std::shared_ptr<GamePlayService> gamePlayService,
+                             std::shared_ptr<RecordService> recordService) : m_gameRouter(std::move(gameRouter)),
+                                                                             m_gamePlayService(std::move(gamePlayService)),
+                                                                             m_recordService(std::move(recordService)),
+                                                                             m_isRecord(false) {}
 
 void GameOverScene::onEnter() {
     const auto record = buildRecord();
@@ -28,14 +30,15 @@ void GameOverScene::draw() {
         std::cout << "Voce nao bateu o recorde. Pressione Enter para voltar ao menu.\n";
     }
 }
+
 void GameOverScene::input() {
     if (!_kbhit()) return;
 
     const int key = _getch();
 
     if (m_isRecord) {
-
-        if (key == 13) { // ENTER
+        if (key == 13) {
+            // ENTER
 
             const auto record = buildRecordAndAssignRecord();
             m_recordService->addRecord(record);
@@ -48,13 +51,15 @@ void GameOverScene::input() {
         }
         // Caracteres visíveis
         else if (std::isprint(static_cast<unsigned char>(key))) {
-            if (m_name.size() < 20) { // limite opcional
+            if (m_name.size() < 20) {
+                // limite opcional
                 m_name.push_back(key);
             }
         }
     } else {
         // Apenas espera Enter
-        if (key == 13) { // ENTER
+        if (key == 13) {
+            // ENTER
             m_gameRouter->menu();
         }
     }
@@ -66,14 +71,14 @@ void GameOverScene::onExit() {
 }
 
 Record GameOverScene::buildRecord() const {
-    const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
-    auto record = Record(gamePlay->getNumberOfMoves(), gamePlay->getDurationMillis());
+    const auto gamePlay = m_gamePlayService->getGamePlay();
+    auto record = Record(gamePlay.getNumberOfMoves(), gamePlay.getDurationMillis());
     return record;
 }
 
 Record GameOverScene::buildRecordAndAssignRecord() const {
-    const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
-    auto record = Record(gamePlay->getNumberOfMoves(), gamePlay->getDurationMillis());
-    record.assignRecord(m_name, gamePlay->getStartedAtAsString());
+    const auto gamePlay = m_gamePlayService->getGamePlay();
+    auto record = Record(gamePlay.getNumberOfMoves(), gamePlay.getDurationMillis());
+    record.assignRecord(m_name, gamePlay.getStartedAtAsString());
     return record;
 }

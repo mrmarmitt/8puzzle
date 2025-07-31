@@ -1,16 +1,16 @@
 #include "GameRouter.h"
 
+#include <utility>
+
 #include "state/StateGame.h"
 
-GameRouter::GameRouter() {
-    m_currentState = std::make_unique<InitialSG>();
-    m_nextState = std::make_unique<InitialSG>();
+GameRouter::GameRouter(std::shared_ptr<SceneRepository> sceneRepository) : RouterService(std::move(sceneRepository)) {
 }
 
 GameRouter::~GameRouter() = default;
 
-StateGameFlow& GameRouter::castIt(const std::unique_ptr<IState>& state) {
-    auto* flow = dynamic_cast<StateGameFlow*>(state.get());
+StateGameFlow& GameRouter::castIt(IState& state) {
+    auto* flow = dynamic_cast<StateGameFlow*>(&state);
     if (!flow) {
         throw std::runtime_error("Estado atual não é do tipo StateGameFlow.");
     }
@@ -18,25 +18,25 @@ StateGameFlow& GameRouter::castIt(const std::unique_ptr<IState>& state) {
 }
 
 void GameRouter::introduction() {
-    castIt(m_nextState).introduction(*this);
+    castIt(getNextStateGame()).introduction(*this);
 }
 
 void GameRouter::menu() {
-    castIt(m_nextState).menu(*this);
+    castIt(getNextStateGame()).menu(*this);
 }
 
 void GameRouter::game() {
-    castIt(m_nextState).game(*this);
+    castIt(getNextStateGame()).game(*this);
 }
 
 void GameRouter::gameOver() {
-    castIt(m_nextState).gameOver(*this);
+    castIt(getNextStateGame()).gameOver(*this);
 }
 
 void GameRouter::record() {
-    castIt(m_nextState).record(*this);
+    castIt(getNextStateGame()).record(*this);
 }
 
 void GameRouter::exit() {
-    castIt(m_nextState).exit(*this);
+    castIt(getNextStateGame()).exit(*this);
 }

@@ -3,26 +3,21 @@
 
 #include "8puzzle/game/GamePlay.h"
 
-class GamePlayService {
-    //repository .json para ser
+class GamePlayRepository;
 
-    std::shared_ptr<GamePlay> m_currentGamePlay;
+class GamePlayService {
+    const std::shared_ptr<GamePlayRepository> m_gamePlayRepository;
 
 public:
-    GamePlayService() = default;
+    explicit GamePlayService(const std::shared_ptr<GamePlayRepository> &gamePlayRepository);
+
     ~GamePlayService() = default;
 
-    void startNewGame();
-    void setCurrentGamePlay(const std::shared_ptr<GamePlay>& gamePlay);
-    [[nodiscard]] std::shared_ptr<GamePlay> getCurrentGamePlay() const;
-    // std::shared_ptr<GamePlay> getGamePlay();
+    void startNewGame() const;
 
-    // [[nodiscard]] std::chrono::system_clock::time_point getStartedAt() const;
-    // [[nodiscard]] std::chrono::system_clock::time_point getFinishedAt() const;
-    // [[nodiscard]] int getNumberOfMoves() const;
-    // void incrementMove() const;
-    // void completeGame() const;
+    void setGamePlay(std::unique_ptr<GamePlay> gamePlay) const;
 
-    void clear();
+    [[nodiscard]] GamePlay &getGamePlay() const;
 
+    void clear() const;
 };

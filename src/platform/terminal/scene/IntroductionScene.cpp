@@ -5,10 +5,9 @@
 #include <iostream>
 #include <thread>
 
-#include "8puzzle/engine/ServiceContainer.h"
+#include "8puzzle/game/GameRouter.h"
 
-IntroductionScene::IntroductionScene() :
-    m_gameRouter(ServiceContainer::get().getRouter()) {}
+IntroductionScene::IntroductionScene(std::shared_ptr<GameRouter> gameRouter) : m_gameRouter(std::move(gameRouter)) {}
 
 void IntroductionScene::draw() {
     const std::string title = R"(

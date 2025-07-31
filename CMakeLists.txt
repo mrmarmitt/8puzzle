@@ -41,11 +41,11 @@ target_include_directories(core_lib PUBLIC src)
 # -------------------------
 # FTXUI
 # -------------------------
-FetchContent_Declare(ftxui
-        GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui
-        GIT_TAG v6.1.9
-)
-FetchContent_MakeAvailable(ftxui)
+#FetchContent_Declare(ftxui
+#        GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui
+#        GIT_TAG v6.1.9
+#)
+#FetchContent_MakeAvailable(ftxui)
 
 # -------------------------
 # GoogleTest

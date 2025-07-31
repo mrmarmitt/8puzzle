@@ -1,11 +1,13 @@
 #pragma once
 #include <memory>
 
-class GameRouter;
+
+class RouterService;
+
 class GameManager final {
-    std::shared_ptr<GameRouter> m_gameRouter;
+    std::shared_ptr<RouterService> m_routerService;
 public:
-    explicit GameManager();
+    explicit GameManager(std::shared_ptr<RouterService> routerService);
     ~GameManager();
 
     void onEnter() const;

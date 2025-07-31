@@ -7,7 +7,7 @@ class GameRouter;
 class IntroductionScene final : public IScene {
     std::shared_ptr<GameRouter> m_gameRouter;
 public:
-    explicit IntroductionScene();
+    explicit IntroductionScene(std::shared_ptr<GameRouter> gameRouter);
 
     void onEnter() override {}
     void draw() override;

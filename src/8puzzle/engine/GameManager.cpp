@@ -1,15 +1,16 @@
 #include "GameManager.h"
 
 #include <iostream>
+#include <utility>
 
 #include "IScene.h"
-#include "ServiceContainer.h"
+#include "8puzzle/game/GameRouter.h"
 
-GameManager::GameManager() : m_gameRouter(ServiceContainer::get().getRouter()){}
+GameManager::GameManager(std::shared_ptr<RouterService> routerService) : m_routerService(std::move(routerService)){}
 GameManager::~GameManager() = default;
 
 void GameManager::onEnter() const {
-    IScene& screen = m_gameRouter->getCurrentCachedScreen();
+    IScene& screen = m_routerService->getCurrentCachedScreen();
 
     if (!screen.isOnEnterExecuted()) {
         screen.onEnter();
@@ -18,27 +19,27 @@ void GameManager::onEnter() const {
 }
 
 void GameManager::render() const {
-    IScene& screen = m_gameRouter->getCurrentCachedScreen();
+    IScene& screen = m_routerService->getCurrentCachedScreen();
 
     screen.draw();
 }
 
 void GameManager::input() const {
-    IScene& screen = m_gameRouter->getCurrentCachedScreen();
+    IScene& screen = m_routerService->getCurrentCachedScreen();
 
     screen.input();
 }
 
 void GameManager::onExit() const {
-    if (m_gameRouter->hasNextScreen()) {
-        IScene& screen = m_gameRouter->getCurrentCachedScreen();
+    if (m_routerService->hasNextScreen()) {
+        IScene& screen = m_routerService->getCurrentCachedScreen();
         screen.onExit();
-        m_gameRouter->goToNextScreen();
+        m_routerService->goToNextScreen();
     }
 }
 
 bool GameManager::shouldExist() const {
-    return m_gameRouter->getCurrentStateGameCode() == "exit";
+    return m_routerService->getCurrentStateGameCode() == "exit";
 }
 
 void GameManager::cleanup() {

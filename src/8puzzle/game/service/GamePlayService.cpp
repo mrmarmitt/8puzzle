@@ -1,21 +1,22 @@
 #include "GamePlayService.h"
 
-void GamePlayService::startNewGame() {
-    m_currentGamePlay = std::make_shared<GamePlay>();
+#include "repository/GamePlayRepository.h"
+
+GamePlayService::GamePlayService(const std::shared_ptr<GamePlayRepository> &gamePlayRepository) : m_gamePlayRepository(gamePlayRepository) {
 }
 
-void GamePlayService::setCurrentGamePlay(const std::shared_ptr<GamePlay>& gamePlay) {
-    m_currentGamePlay = gamePlay;
+void GamePlayService::startNewGame() const {
+    m_gamePlayRepository->persist(std::make_unique<GamePlay>());
 }
 
-std::shared_ptr<GamePlay> GamePlayService::getCurrentGamePlay() const {
-    return m_currentGamePlay;
+void GamePlayService::setGamePlay(std::unique_ptr<GamePlay> gamePlay) const {
+    m_gamePlayRepository->persist(std::move(gamePlay));
 }
 
-void GamePlayService::clear() {
-    m_currentGamePlay.reset();
-    m_currentGamePlay = std::make_shared<GamePlay>();
+GamePlay &GamePlayService::getGamePlay() const {
+    return m_gamePlayRepository->get();
 }
 
-
-
+void GamePlayService::clear() const {
+    m_gamePlayRepository->clear();
+}

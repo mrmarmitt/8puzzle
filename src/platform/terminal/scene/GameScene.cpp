@@ -6,26 +6,25 @@
 #include <iostream>
 #include <sstream>
 
-#include "../../../8puzzle/engine/ServiceContainer.h"
 #include "8puzzle/game/GameRouter.h"
+#include "8puzzle/game/service/GamePlayService.h"
 
-GameScene::GameScene() :
-    m_gameRouter(ServiceContainer::get().getRouter()),
-    m_gamePlayService(ServiceContainer::get().getGameService()){}
+GameScene::GameScene(std::shared_ptr<GameRouter> gameRouter, std::shared_ptr<GamePlayService> gamePlayService)
+    : m_gameRouter(std::move(gameRouter)), m_gamePlayService(std::move(gamePlayService)) {}
 
 
 void GameScene::draw() {
-    const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
+    auto& gamePlay = m_gamePlayService->getGamePlay();
     std::cout << printBoard() << std::endl;
 
     if (m_board.isSolved()) {
-        gamePlay->completeGame();
+        gamePlay.completeGame();
         m_gameRouter->gameOver();
     }
 }
 
 void GameScene::input() {
-    const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
+    auto& gamePlay = m_gamePlayService->getGamePlay();
     if (_kbhit()) {
         const int key = _getch();
 
@@ -33,24 +32,22 @@ void GameScene::input() {
             const int numberPressed = key - '0';
 
             if (m_board.moveTile(numberPressed)) {
-                gamePlay->incrementMove();
+                gamePlay.incrementMove();
             }
         }
 
         if (key == 27) {
-            m_gamePlayService->clear();
             m_gameRouter->menu();
         }
     }
 }
 
 void GameScene::onExit() {
-    std::cout << "GAME_SCREEN PASSOU AQUI" << std::endl;
     m_board.createRandomGame();
 }
 
 std::string GameScene::printBoard() const {
-    const auto gamePlay = m_gamePlayService->getCurrentGamePlay();
+    const auto& gamePlay = m_gamePlayService->getGamePlay();
     std::ostringstream result;
 
     result << "=== GAME ===\n";
@@ -64,7 +61,7 @@ std::string GameScene::printBoard() const {
 
         for (int column = 0; column < 3; ++column) {
             const int index = line * 3 + column;
-            const Tile& tile = m_board.getBoard()[index];
+            const Tile &tile = m_board.getBoard()[index];
             std::string value = tile.isEmpty() ? " " : tile.toString();
 
             result << " " << value << " |";
@@ -75,7 +72,7 @@ std::string GameScene::printBoard() const {
 
     const auto now = std::chrono::system_clock::now();
     const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-        now - gamePlay->getStartedAt()
+        now - gamePlay.getStartedAt()
     ).count();
 
     const int hours = static_cast<int>(elapsed / (1000 * 60 * 60));
@@ -83,10 +80,10 @@ std::string GameScene::printBoard() const {
     const int seconds = static_cast<int>((elapsed / 1000) % 60);
     const int milliseconds = static_cast<int>(elapsed % 1000);
 
-    result << "\nMovimentos: " << gamePlay->getNumberOfMoves() << "\n";
+    result << "\nMovimentos: " << gamePlay.getNumberOfMoves() << "\n";
     result << "Tempo: " << std::setfill('0') << std::setw(2) << hours << ":" << std::setw(2)
-           << minutes << ":" << std::setw(2) << seconds << "." << std::setw(3) << milliseconds
-           << "\n";
+            << minutes << ":" << std::setw(2) << seconds << "." << std::setw(3) << milliseconds
+            << "\n";
 
     return result.str();
 }
