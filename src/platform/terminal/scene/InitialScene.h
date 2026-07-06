@@ -1,10 +1,10 @@
 #pragma once
 #include <memory>
 
-#include "../../../8puzzle/engine/IScene.h"
+#include "TerminalScene.h"
 
 class GameRouter;
-class InitialScene final : public IScene {
+class InitialScene final : public TerminalScene {
     std::shared_ptr<GameRouter> m_gameRouter;
 public:
     explicit InitialScene(std::shared_ptr<GameRouter> gameRouter);

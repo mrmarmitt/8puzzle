@@ -3,14 +3,14 @@
 #include <memory>
 #include <string>
 
-#include "../../../8puzzle/engine/IScene.h"
+#include "TerminalScene.h"
 #include "8puzzle/game/Record.h"
 #include "8puzzle/game/service/GamePlayService.h"
 #include "8puzzle/game/service/RecordService.h"
 
 class GameRouter;
 
-class GameOverScene final : public IScene {
+class GameOverScene final : public TerminalScene {
     std::shared_ptr<GameRouter> m_gameRouter;
     std::shared_ptr<GamePlayService> m_gamePlayService;
     std::shared_ptr<RecordService> m_recordService;

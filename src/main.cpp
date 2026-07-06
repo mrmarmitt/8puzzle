@@ -1,47 +1,49 @@
 #include <iostream>
+#include <memory>
 
-#include "8puzzle/engine/EngineManager.h"
+#include <cengine/core/EngineManager.hpp>
+#include <cengine/routing/SceneRepository.hpp>
+#include <cengine/routing/RouterInMemory.hpp>
+#include <cengine/routing/GameManager.hpp>
 
-#include "8puzzle/engine/service/repository/SceneRepository.h"
 #include "8puzzle/game/GameRouter.h"
 #include "8puzzle/game/service/ConfigurationService.h"
 #include "8puzzle/game/service/GamePlayService.h"
 #include "8puzzle/game/service/RecordService.h"
 #include "8puzzle/game/service/repository/GamePlayRepository.h"
 #include "8puzzle/game/state/StateGame.h"
+
 #include "platform/terminal/TerminalSceneFactory.h"
 #include "platform/terminal/TerminalWindowManager.h"
-
-using namespace std;
 
 
 int main()
 {
     std::cout << "Iniciando o jogo..." << std::endl;
 
-    //Iniciando o repository de Scenas
-    const auto sceneRepository = std::make_shared<SceneRepository>(std::make_unique<InitialSG>());
-    //Iniciando o repository da GamePlay
+    // Repositório de cenas da cengine, semeado com o estado inicial do jogo.
+    const auto sceneRepository = std::make_shared<cengine::routing::SceneRepository>(std::make_unique<InitialSG>());
+    // Repositório da GamePlay
     const auto gamePlayRepository = std::make_shared<GamePlayRepository>();
 
-    //Iniciando a service de gerenciamento de scenas.
+    // Fachada de navegação de domínio usada pelas cenas, sobre o mesmo repositório.
     const auto gameRouter = std::make_shared<GameRouter>(sceneRepository);
-    //Iniciando a service de gerenciamento da configuração
+    // Services do jogo
     const auto configurationService = std::make_shared<ConfigurationService>();
-    //Iniciando a service de gerenciamento da gamePlay
     const auto gamePlayService = std::make_shared<GamePlayService>(gamePlayRepository);
-    //Iniciando a service de gerenciamento do recorde
     const auto recordService = std::make_shared<RecordService>();
 
-    //Populando o repository com os metodos construtores das scenas
+    // Popula o repositório com as factories das cenas do terminal.
     TerminalSceneFactory::populateTerminalScreens(sceneRepository, gameRouter, configurationService, gamePlayService, recordService);
 
-    //Iniciando o terminal
     auto windowManager = std::make_unique<TerminalWindowManager>();
-    //Iniciando o GameManager
-    auto gameManager = std::make_unique<GameManager>(gameRouter);
 
-    EngineManager engineManager(
+    // Roteador que o game loop dirige. Compartilha o MESMO sceneRepository do
+    // gameRouter, então as navegações agendadas pelas cenas são vistas aqui.
+    auto router = std::make_shared<cengine::routing::RouterInMemory>(sceneRepository);
+    auto gameManager = std::make_unique<cengine::routing::GameManager>(router);
+
+    cengine::core::EngineManager engineManager(
         std::move(windowManager),
         std::move(gameManager)
     );
@@ -49,5 +51,5 @@ int main()
     engineManager.start();
 
     std::cout << "Jogo encerrado." << std::endl;
-	return 0;
+    return 0;
 }

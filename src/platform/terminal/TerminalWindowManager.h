@@ -2,9 +2,9 @@
 
 #include <windows.h>
 
-#include "../../8puzzle/engine/IWindowManager.h"
+#include <cengine/core/IWindowManager.hpp>
 
-class TerminalWindowManager : public IWindowManager {
+class TerminalWindowManager : public cengine::core::IWindowManager {
     HANDLE m_hConsole;
     COORD m_homeCoords;
 

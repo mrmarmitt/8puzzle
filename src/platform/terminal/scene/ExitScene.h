@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../../8puzzle/engine/IScene.h"
+#include "TerminalScene.h"
 
-class ExitScene final : public IScene {
+class ExitScene final : public TerminalScene {
 
 public:
     ExitScene() = default;

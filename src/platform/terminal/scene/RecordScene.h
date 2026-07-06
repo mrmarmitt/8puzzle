@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "../../../8puzzle/engine/IScene.h"
+#include "TerminalScene.h"
 
 class GameRouter;
 class RecordService;
@@ -12,7 +12,7 @@ enum class RecordSortType {
     ByMoves
 };
 
-class RecordScene final : public IScene {
+class RecordScene final : public TerminalScene {
     std::shared_ptr<GameRouter> m_gameRouter;
     std::shared_ptr<RecordService> m_recordService;
     RecordSortType m_sortType = RecordSortType::ByTime;

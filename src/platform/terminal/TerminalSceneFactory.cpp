@@ -1,7 +1,7 @@
 #include "TerminalSceneFactory.h"
 
-#include "../../8puzzle/engine/service/repository/SceneRepository.h"
-#include "8puzzle/engine/service/RouterService.h"
+#include <cengine/routing/ISceneRepository.hpp>
+
 #include "scene/ExitScene.h"
 #include "scene/GameOverScene.h"
 #include "scene/GameScene.h"
@@ -10,7 +10,7 @@
 #include "scene/MenuScene.h"
 #include "scene/RecordScene.h"
 
-void TerminalSceneFactory::populateTerminalScreens(const std::shared_ptr<SceneRepository> &sceneRepository,
+void TerminalSceneFactory::populateTerminalScreens(const std::shared_ptr<cengine::routing::ISceneRepository> &sceneRepository,
                                                    const std::shared_ptr<GameRouter> &gameRouter,
                                                    const std::shared_ptr<ConfigurationService> &configurationService,
                                                    const std::shared_ptr<GamePlayService> &gamePlayService,
