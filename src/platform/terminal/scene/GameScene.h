@@ -25,6 +25,7 @@ public:
     explicit GameScene(std::shared_ptr<GameRouter> gameRouter, std::shared_ptr<GamePlayService> gamePlayService);
 
     void onEnter() override {}
+    void update(cengine::core::Seconds) override {}
     void draw() override;
     void input() override;
     void onExit() override;

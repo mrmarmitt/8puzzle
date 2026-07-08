@@ -29,6 +29,7 @@ public:
 
     void onEnter() override;
 
+    void update(cengine::core::Seconds) override {}
     void draw() override;
 
     void input() override;
