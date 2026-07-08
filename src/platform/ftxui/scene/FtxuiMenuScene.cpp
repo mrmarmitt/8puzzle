@@ -49,7 +49,7 @@ void FtxuiMenuScene::draw() {
 void FtxuiMenuScene::input() {
     constexpr int numOptions = 4;
 
-    switch (readKey()) {
+    switch (readKey().key) {
         case Key::Up:
             m_selected = (m_selected == 0) ? (numOptions - 1) : (m_selected - 1);
             break;

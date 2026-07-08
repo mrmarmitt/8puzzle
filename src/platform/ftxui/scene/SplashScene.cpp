@@ -6,28 +6,19 @@
 #include <vector>
 
 #include "8puzzle/game/GameRouter.h"
+#include "../BoardView.h"
 #include "../Keyboard.h"
 
 using namespace ftxui;
 
 namespace {
 
-Element tile(const std::string& label) {
-    const bool empty = label.empty();
-    Element cell = text(label) | bold | center
-        | size(WIDTH, EQUAL, 7) | size(HEIGHT, EQUAL, 3);
-    if (!empty) {
-        cell = cell | color(Color::Cyan);
-    }
-    return cell | borderRounded;
-}
-
-// Tabuleiro resolvido, decorativo, provando o gridbox que a GameScene usará.
+// Tabuleiro resolvido, decorativo (mesmo visual da FtxuiGameScene).
 Element decorativeBoard() {
     return gridbox({
-        {tile("1"), tile("2"), tile("3")},
-        {tile("4"), tile("5"), tile("6")},
-        {tile("7"), tile("8"), tile("")},
+        {tileCell("1"), tileCell("2"), tileCell("3")},
+        {tileCell("4"), tileCell("5"), tileCell("6")},
+        {tileCell("7"), tileCell("8"), tileCell("")},
     });
 }
 
@@ -61,7 +52,7 @@ void SplashScene::draw() {
 }
 
 void SplashScene::input() {
-    switch (readKey()) {
+    switch (readKey().key) {
         case Key::Enter:
             m_gameRouter->introduction();
             break;

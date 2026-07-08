@@ -16,7 +16,8 @@ void InstructionsScene::draw() {
         separator(),
         text(" "),
         text("• O tabuleiro 3x3 tem as peças de 1 a 8 e um espaço vazio."),
-        text("• Use as SETAS para deslizar uma peça vizinha para o vazio."),
+        text("• Use as SETAS para deslizar uma peça vizinha para o vazio"),
+        text("  (ou digite o NÚMERO da peça, de 1 a 8)."),
         text("• Vence quem ordenar as peças de 1 a 8, com o vazio no fim."),
         text("• Menos movimentos e menos tempo = melhor recorde."),
         text(" "),
@@ -33,7 +34,7 @@ void InstructionsScene::draw() {
 }
 
 void InstructionsScene::input() {
-    if (readKey() == Key::Enter) {
+    if (readKey().key == Key::Enter) {
         m_gameRouter->menu();
     }
 }

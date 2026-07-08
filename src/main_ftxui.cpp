@@ -8,6 +8,7 @@
 
 #include "8puzzle/game/GameRouter.h"
 #include "8puzzle/game/service/GamePlayService.h"
+#include "8puzzle/game/service/RecordService.h"
 #include "8puzzle/game/service/repository/GamePlayRepository.h"
 #include "8puzzle/game/state/StateGame.h"
 
@@ -28,8 +29,9 @@ int main()
 
     const auto gamePlayRepository = std::make_shared<GamePlayRepository>();
     const auto gamePlayService = std::make_shared<GamePlayService>(gamePlayRepository);
+    const auto recordService = std::make_shared<RecordService>();
 
-    FtxuiSceneFactory::populateFtxuiScenes(sceneRepositoryRef, gameRouter, gamePlayService);
+    FtxuiSceneFactory::populateFtxuiScenes(sceneRepositoryRef, gameRouter, gamePlayService, recordService);
 
     cengine::core::EngineManager engineManager(
         std::make_unique<FtxuiWindowManager>(),
