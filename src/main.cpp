@@ -10,6 +10,7 @@
 #include "8puzzle/game/service/ConfigurationService.h"
 #include "8puzzle/game/service/GamePlayService.h"
 #include "8puzzle/game/service/RecordService.h"
+#include "8puzzle/game/service/repository/FileRecordRepository.h"
 #include "8puzzle/game/service/repository/GamePlayRepository.h"
 #include "8puzzle/game/state/StateGame.h"
 
@@ -35,11 +36,13 @@ int main()
     // Fachada de navegação de domínio usada pelas cenas, sobre o mesmo router.
     const auto gameRouter = std::make_shared<GameRouter>(router);
 
-    // Repositório da GamePlay e services do jogo
+    // Repositórios e services do jogo (recordes persistidos em arquivo ao
+    // lado do diretório de execução).
     const auto gamePlayRepository = std::make_shared<GamePlayRepository>();
+    const auto recordRepository = std::make_shared<FileRecordRepository>("records.tsv");
     const auto configurationService = std::make_shared<ConfigurationService>();
     const auto gamePlayService = std::make_shared<GamePlayService>(gamePlayRepository);
-    const auto recordService = std::make_shared<RecordService>();
+    const auto recordService = std::make_shared<RecordService>(recordRepository);
 
     // Popula o repositório com as factories das cenas do terminal (roda antes
     // do primeiro frame; as factories capturam suas dependências por valor).

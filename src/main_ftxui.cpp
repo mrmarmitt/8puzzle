@@ -9,6 +9,7 @@
 #include "8puzzle/game/GameRouter.h"
 #include "8puzzle/game/service/GamePlayService.h"
 #include "8puzzle/game/service/RecordService.h"
+#include "8puzzle/game/service/repository/FileRecordRepository.h"
 #include "8puzzle/game/service/repository/GamePlayRepository.h"
 #include "8puzzle/game/state/StateGame.h"
 
@@ -29,7 +30,9 @@ int main()
 
     const auto gamePlayRepository = std::make_shared<GamePlayRepository>();
     const auto gamePlayService = std::make_shared<GamePlayService>(gamePlayRepository);
-    const auto recordService = std::make_shared<RecordService>();
+    // Recordes persistidos em arquivo (mesmo arquivo do terminal clássico).
+    const auto recordRepository = std::make_shared<FileRecordRepository>("records.tsv");
+    const auto recordService = std::make_shared<RecordService>(recordRepository);
 
     FtxuiSceneFactory::populateFtxuiScenes(sceneRepositoryRef, gameRouter, gamePlayService, recordService);
 

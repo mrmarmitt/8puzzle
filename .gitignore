@@ -41,3 +41,6 @@
 
 # Presets de máquina (caminhos de compilador específicos — não versionar)
 CMakeUserPresets.json
+
+# Dados de jogo gerados em runtime
+records.tsv

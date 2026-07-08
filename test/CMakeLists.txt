@@ -18,6 +18,7 @@ FetchContent_MakeAvailable(googletest)
 # -------------------------------------------------------------
 add_executable(8puzzle_tests
     "${CMAKE_CURRENT_SOURCE_DIR}/8puzzle/game/BoardTest.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/8puzzle/game/service/RecordServiceTest.cpp"
 )
 
 target_link_libraries(8puzzle_tests

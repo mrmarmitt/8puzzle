@@ -1,17 +1,21 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 #include "8puzzle/game/Record.h"
 
+class RecordRepository;
+
 class RecordService {
-    std::vector<Record> m_records;
+    std::shared_ptr<RecordRepository> m_recordRepository;
+    std::vector<Record> m_records; // cache em memória do conteúdo persistido
 
 public:
-    RecordService() = default;
+    /// Carrega os recordes persistidos na construção.
+    explicit RecordService(std::shared_ptr<RecordRepository> recordRepository);
 
-    void loadInitialRecords(const std::vector<Record>& initialRecords);
-
+    /// Adiciona e persiste imediatamente (recorde não pode se perder ao fechar).
     void addRecord(const Record& record);
 
     [[nodiscard]] std::vector<Record> listByFastestTime() const;

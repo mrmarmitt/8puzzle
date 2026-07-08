@@ -1,13 +1,18 @@
 #include "RecordService.h"
 
 #include <algorithm>
+#include <utility>
 
-void RecordService::loadInitialRecords(const std::vector<Record>& initialRecords){
-    m_records = initialRecords;
+#include "repository/RecordRepository.h"
+
+RecordService::RecordService(std::shared_ptr<RecordRepository> recordRepository)
+    : m_recordRepository(std::move(recordRepository)),
+      m_records(m_recordRepository->loadAll()) {
 }
 
 void RecordService::addRecord(const Record& record) {
     m_records.push_back(record);
+    m_recordRepository->saveAll(m_records);
 }
 
 std::vector<Record> RecordService::listByFastestTime() const {
