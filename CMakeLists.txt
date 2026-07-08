@@ -45,7 +45,9 @@ list(REMOVE_ITEM PROJECT_SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/main_ftxui.cpp"
 )
-list(FILTER PROJECT_SOURCES EXCLUDE REGEX "/platform/ftxui/")
+# ftxui tem alvo proprio (8PuzzleFtxui); theforge builda via MSBuild/VS
+# (src/platform/theforge/PC_VS2019) contra a arvore do The-Forge.
+list(FILTER PROJECT_SOURCES EXCLUDE REGEX "/platform/(ftxui|theforge)/")
 
 add_library(8puzzle_lib STATIC ${PROJECT_SOURCES})
 target_include_directories(8puzzle_lib PUBLIC src)
