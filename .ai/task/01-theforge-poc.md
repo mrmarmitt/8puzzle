@@ -1,6 +1,6 @@
 # 01 — PoC The-Forge: o 8Puzzle numa plataforma gráfica
 
-- **Status:** todo
+- **Status:** in-progress (degrau 0 ✅ em 2026-07-08)
 - **Prioridade:** exploratória (aprendizado de renderização)
 - **Categoria:** Plataforma
 - **Pré-requisitos no ambiente:** ✅ já satisfeitos (ver inventário abaixo)
@@ -65,9 +65,10 @@ sofre). Formalizar isso é a task 15 da cengine.
 
 ## Degraus
 
-0. **Revalidar o ambiente**: rebuildar e rodar `01_Transformations`
-   (`Examples_3/Unit_Tests/PC_VS2019/Unit_Tests.sln`) no VS2019 atual —
-   drivers/Windows mudaram desde jun/2025.
+0. **Revalidar o ambiente** ✅ (2026-07-08): exemplos rebuildados e executados
+   no VS2019 atual, incluindo o `10_ScreenSpaceReflections` (um dos mais
+   complexos — visibility buffer + reflexões + PBR), rodando e interativo.
+   Toolchain, GPU e driver confirmados.
 1. **Hello Forge**: vcxproj novo na solution de exemplos com um `IApp` mínimo
    desenhando texto via UI middleware do The-Forge (sem 8puzzle). Valida o
    boilerplate (Init/Load/Draw, FSL, fontes).
@@ -82,7 +83,8 @@ sofre). Formalizar isso é a task 15 da cengine.
 
 ## Critérios de aceite
 
-- [ ] Exemplo oficial roda no ambiente atual (degrau 0).
+- [x] Exemplo oficial roda no ambiente atual (degrau 0) — validado com
+      `10_ScreenSpaceReflections` em 2026-07-08.
 - [ ] `IApp` próprio compila e desenha na solution do The-Forge (degrau 1).
 - [ ] Navegação de cenas da cengine funcionando dentro do `IApp` (degrau 2).
 - [ ] 8Puzzle jogável de ponta a ponta no The-Forge, com domínio inalterado
