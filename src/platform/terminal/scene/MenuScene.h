@@ -1,13 +1,13 @@
-#pragma once
+﻿#pragma once
 
 #include <memory>
 
-#include "TerminalScene.h"
+#include <cengine/core/IScene.hpp>
 
 class GameRouter;
 class GamePlayService;
 
-class MenuScene final : public TerminalScene {
+class MenuScene final : public cengine::core::IScene {
     std::shared_ptr<GameRouter> m_gameRouter;
     std::shared_ptr<GamePlayService> m_gamePlayService;
 

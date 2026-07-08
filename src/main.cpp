@@ -21,26 +21,31 @@ int main()
 {
     std::cout << "Iniciando o jogo..." << std::endl;
 
-    // Repositório de cenas da cengine, semeado com o estado inicial do jogo.
-    const auto sceneRepository = std::make_shared<cengine::routing::SceneRepository>(std::make_unique<InitialSG>());
-    // Repositório da GamePlay
-    const auto gamePlayRepository = std::make_shared<GamePlayRepository>();
+    // Provedor de cenas da cengine. A posse vai para o router logo abaixo
+    // (posse exclusiva, cengine 0.2.0); a referência fica só para registrar as
+    // factories durante a montagem — o endereço é estável após o move.
+    auto sceneRepository = std::make_unique<cengine::routing::SceneRepository>();
+    cengine::routing::ISceneRepository& sceneRepositoryRef = *sceneRepository;
 
-    // Fachada de navegação de domínio usada pelas cenas, sobre o mesmo repositório.
-    const auto gameRouter = std::make_shared<GameRouter>(sceneRepository);
-    // Services do jogo
+    // Roteador que o game loop dirige: dono do repositório e da máquina de
+    // estados, semeado com o estado inicial do jogo.
+    const auto router = std::make_shared<cengine::routing::RouterInMemory>(
+        std::move(sceneRepository), std::make_unique<InitialSG>());
+
+    // Fachada de navegação de domínio usada pelas cenas, sobre o mesmo router.
+    const auto gameRouter = std::make_shared<GameRouter>(router);
+
+    // Repositório da GamePlay e services do jogo
+    const auto gamePlayRepository = std::make_shared<GamePlayRepository>();
     const auto configurationService = std::make_shared<ConfigurationService>();
     const auto gamePlayService = std::make_shared<GamePlayService>(gamePlayRepository);
     const auto recordService = std::make_shared<RecordService>();
 
-    // Popula o repositório com as factories das cenas do terminal.
-    TerminalSceneFactory::populateTerminalScreens(sceneRepository, gameRouter, configurationService, gamePlayService, recordService);
+    // Popula o repositório com as factories das cenas do terminal (roda antes
+    // do primeiro frame; as factories capturam suas dependências por valor).
+    TerminalSceneFactory::populateTerminalScreens(sceneRepositoryRef, gameRouter, configurationService, gamePlayService, recordService);
 
     auto windowManager = std::make_unique<TerminalWindowManager>();
-
-    // Roteador que o game loop dirige. Compartilha o MESMO sceneRepository do
-    // gameRouter, então as navegações agendadas pelas cenas são vistas aqui.
-    auto router = std::make_shared<cengine::routing::RouterInMemory>(sceneRepository);
     auto gameManager = std::make_unique<cengine::routing::GameManager>(router);
 
     cengine::core::EngineManager engineManager(

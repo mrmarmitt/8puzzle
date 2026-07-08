@@ -2,22 +2,22 @@
 #include <memory>
 
 #include <cengine/routing/IState.hpp>
-#include <cengine/routing/ISceneRepository.hpp>
+#include <cengine/routing/IRouter.hpp>
 
 class StateGameFlow;
 
-// Fachada de navegação de domínio do 8Puzzle sobre o repositório de cenas da
-// cengine. As cenas chamam introduction()/menu()/game()/... que delegam à
-// máquina de estados (StateGameFlow do próximo estado) e agendam a próxima cena
-// via setNextState(). O loop em si é conduzido por um cengine::routing::IRouter
-// que compartilha o mesmo ISceneRepository (ver main.cpp).
+// Fachada de navegação de domínio do 8Puzzle sobre o roteador da cengine.
+// As cenas chamam introduction()/menu()/game()/... que delegam à máquina de
+// estados (StateGameFlow do estado atual) e agendam a próxima cena via
+// setNextState(). Desde a cengine 0.2.0 o repositório de cenas pertence ao
+// router; a fachada fala apenas com o IRouter.
 class GameRouter final {
-    std::shared_ptr<cengine::routing::ISceneRepository> m_sceneRepository;
+    std::shared_ptr<cengine::routing::IRouter> m_router;
 
-    static StateGameFlow& castIt(cengine::routing::IState& state);
+    static const StateGameFlow& castIt(const cengine::routing::IState& state);
 
 public:
-    explicit GameRouter(std::shared_ptr<cengine::routing::ISceneRepository> sceneRepository);
+    explicit GameRouter(std::shared_ptr<cengine::routing::IRouter> router);
     ~GameRouter();
 
     // Agenda o próximo estado/cena (chamado pelas transições de StateGameFlow).

@@ -10,16 +10,19 @@
 #include "scene/MenuScene.h"
 #include "scene/RecordScene.h"
 
-void TerminalSceneFactory::populateTerminalScreens(const std::shared_ptr<cengine::routing::ISceneRepository> &sceneRepository,
+// As factories rodam LAZY (no primeiro getScene de cada estado), muito depois
+// desta função retornar — por isso as lambdas capturam os shared_ptr por VALOR.
+void TerminalSceneFactory::populateTerminalScreens(cengine::routing::ISceneRepository &sceneRepository,
                                                    const std::shared_ptr<GameRouter> &gameRouter,
                                                    const std::shared_ptr<ConfigurationService> &configurationService,
                                                    const std::shared_ptr<GamePlayService> &gamePlayService,
                                                    const std::shared_ptr<RecordService> &recordService) {
-    sceneRepository->registerFactory("initial", [&]() { return std::make_unique<InitialScene>(gameRouter); });
-    sceneRepository->registerFactory("introduction", [&]() { return std::make_unique<IntroductionScene>(gameRouter); });
-    sceneRepository->registerFactory("menu", [&]() { return std::make_unique<MenuScene>(gameRouter, gamePlayService); });
-    sceneRepository->registerFactory("game", [&]() { return std::make_unique<GameScene>(gameRouter, gamePlayService); });
-    sceneRepository->registerFactory("gameOver", [&]() { return std::make_unique<GameOverScene>(gameRouter, gamePlayService, recordService); });
-    sceneRepository->registerFactory("record", [&]() { return std::make_unique<RecordScene>(gameRouter, recordService); });
-    sceneRepository->registerFactory("exit", [&]() { return std::make_unique<ExitScene>(); });
+    (void)configurationService; // ainda sem cena consumidora
+    sceneRepository.registerFactory("initial", [gameRouter]() { return std::make_unique<InitialScene>(gameRouter); });
+    sceneRepository.registerFactory("introduction", [gameRouter]() { return std::make_unique<IntroductionScene>(gameRouter); });
+    sceneRepository.registerFactory("menu", [gameRouter, gamePlayService]() { return std::make_unique<MenuScene>(gameRouter, gamePlayService); });
+    sceneRepository.registerFactory("game", [gameRouter, gamePlayService]() { return std::make_unique<GameScene>(gameRouter, gamePlayService); });
+    sceneRepository.registerFactory("gameOver", [gameRouter, gamePlayService, recordService]() { return std::make_unique<GameOverScene>(gameRouter, gamePlayService, recordService); });
+    sceneRepository.registerFactory("record", [gameRouter, recordService]() { return std::make_unique<RecordScene>(gameRouter, recordService); });
+    sceneRepository.registerFactory("exit", []() { return std::make_unique<ExitScene>(); });
 }

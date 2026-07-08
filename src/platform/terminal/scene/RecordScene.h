@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 
 #include <memory>
 
-#include "TerminalScene.h"
+#include <cengine/core/IScene.hpp>
 
 class GameRouter;
 class RecordService;
@@ -12,7 +12,7 @@ enum class RecordSortType {
     ByMoves
 };
 
-class RecordScene final : public TerminalScene {
+class RecordScene final : public cengine::core::IScene {
     std::shared_ptr<GameRouter> m_gameRouter;
     std::shared_ptr<RecordService> m_recordService;
     RecordSortType m_sortType = RecordSortType::ByTime;

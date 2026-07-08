@@ -1,16 +1,16 @@
-#pragma once
+﻿#pragma once
 
 #include <memory>
 #include <string>
 
-#include "TerminalScene.h"
+#include <cengine/core/IScene.hpp>
 #include "8puzzle/game/Record.h"
 #include "8puzzle/game/service/GamePlayService.h"
 #include "8puzzle/game/service/RecordService.h"
 
 class GameRouter;
 
-class GameOverScene final : public TerminalScene {
+class GameOverScene final : public cengine::core::IScene {
     std::shared_ptr<GameRouter> m_gameRouter;
     std::shared_ptr<GamePlayService> m_gamePlayService;
     std::shared_ptr<RecordService> m_recordService;

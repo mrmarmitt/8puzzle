@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.23)
 
 project (8Puzzle)
 
-# A cengine 0.1.0 exige C++23 e propaga o padrão via target_compile_features
+# A cengine 0.2.0 exige C++23 e propaga o padrão via target_compile_features
 # PUBLIC; alinhamos o projeto ao mesmo padrão.
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,7 +24,7 @@ include(FetchContent)
 FetchContent_Declare(
   cengine
   GIT_REPOSITORY https://github.com/mrmarmitt/cengine.git
-  GIT_TAG 0.1.0
+  GIT_TAG 0.2.0
 )
 
 # Não precisamos da suíte de testes da cengine; desligar antes do MakeAvailable

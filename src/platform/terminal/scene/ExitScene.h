@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 
-#include "TerminalScene.h"
+#include <cengine/core/IScene.hpp>
 
-class ExitScene final : public TerminalScene {
+class ExitScene final : public cengine::core::IScene {
 
 public:
     ExitScene() = default;

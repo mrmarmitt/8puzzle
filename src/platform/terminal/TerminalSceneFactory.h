@@ -11,7 +11,7 @@ class RecordService;
 class TerminalSceneFactory {
 public:
     static void populateTerminalScreens(
-        const std::shared_ptr<cengine::routing::ISceneRepository> &sceneRepository,
+        cengine::routing::ISceneRepository &sceneRepository,
         const std::shared_ptr<GameRouter> &gameRouter,
         const std::shared_ptr<ConfigurationService> &configurationService,
         const std::shared_ptr<GamePlayService> &gamePlayService,
