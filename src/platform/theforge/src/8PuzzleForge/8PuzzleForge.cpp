@@ -3,16 +3,21 @@
 //
 // Mesma fiacao do main_ftxui.cpp (dominio, servicos, GameRouter e maquina de
 // estados intocados; recordes no mesmo records.tsv), trocando a PLATAFORMA:
-// em vez de EngineManager + FtxuiWindowManager, o IApp do The-Forge hospeda o
-// GameManager da cengine (arquitetura validada no degrau 2 / CengineAdapter):
+// o IApp do The-Forge hospeda o EngineManager da cengine em MODO HOSPEDADO
+// (cengine 0.4.0, task 15): sem window manager (a janela e do host) e sem
+// start() — o host dirige o quadro:
 //
-//   Update(dt) -> beginInput + onEnter() + input() + update(Seconds{dt})
-//   Draw()     -> beginDraw + render() + onExit(); shouldExit() -> shutdown
+//   Update(dt) -> beginInput + guarda o dt
+//   Draw()     -> beginDraw + engine.frame(dt); false -> requestShutdown()
 //
-// As cenas ficam em scene/ e falam com a plataforma so atraves do forgeui
-// (fila de teclado + desenho de texto) — ver ForgeUi.h.
+// O frame(dt) executa as fases (onEnter -> input -> update(fixedDt) 0..N
+// vezes -> render -> onExit) com o acumulador de fixed timestep DENTRO da
+// engine — o jogo volta a receber dt constante, como nas plataformas
+// terminal/ftxui. As cenas ficam em scene/ e falam com a plataforma so
+// atraves do forgeui (fila de teclado + desenho de texto) — ver ForgeUi.h.
 
 // cengine + jogo — C++ puro, ANTES dos headers do The-Forge (IMemory.h por ultimo).
+#include <cengine/core/EngineManager.hpp>
 #include <cengine/core/Time.hpp>
 #include <cengine/routing/GameManager.hpp>
 #include <cengine/routing/RouterInMemory.hpp>
@@ -62,7 +67,11 @@ uint32_t gFrameIndex = 0;
 uint32_t gFontID = 0;
 
 std::shared_ptr<cengine::routing::RouterInMemory> gRouter;
-std::unique_ptr<cengine::routing::GameManager>    gGameManager;
+std::unique_ptr<cengine::core::EngineManager>     gEngine;
+
+// dt do Update() do host, consumido pelo frame() no Draw() (receita do modo
+// hospedado — ver task 15 da cengine).
+float gDt = 0.0f;
 
 class PuzzleForge: public IApp
 {
@@ -135,7 +144,10 @@ public:
 
         ForgeSceneFactory::populateForgeScenes(sceneRepositoryRef, gameRouter, gamePlayService, recordService);
 
-        gGameManager = std::make_unique<cengine::routing::GameManager>(gRouter);
+        // Modo hospedado: sem window manager (janela e do The-Forge) e sem
+        // start() — o Draw() dirige via frame(dt).
+        gEngine = std::make_unique<cengine::core::EngineManager>(
+            nullptr, std::make_unique<cengine::routing::GameManager>(gRouter));
 
         waitForAllResourceLoads();
 
@@ -144,8 +156,8 @@ public:
 
     void Exit()
     {
-        gGameManager->cleanup();
-        gGameManager.reset();
+        gEngine->cleanup(); // no modo hospedado o cleanup e do host
+        gEngine.reset();
         gRouter.reset();
 
         exitUserInterface();
@@ -205,13 +217,10 @@ public:
 
     void Update(float deltaTime)
     {
+        // O quadro inteiro roda no frame() do Draw(); aqui so capturamos o
+        // input do host e guardamos o dt que ele mediu.
         forgeui::beginInput(!uiIsFocused());
-
-        // fases da cengine dirigidas pelo loop do The-Forge (dt variavel com
-        // clamp do framework; formalizar passo fixo hospedado e a task 15).
-        gGameManager->onEnter();
-        gGameManager->input();
-        gGameManager->update(cengine::core::Seconds{ (double)deltaTime });
+        gDt = deltaTime;
     }
 
     void Draw()
@@ -252,9 +261,11 @@ public:
         cmdSetViewport(cmd, 0.0f, 0.0f, (float)pRenderTarget->mWidth, (float)pRenderTarget->mHeight, 0.0f, 1.0f);
         cmdSetScissor(cmd, 0, 0, pRenderTarget->mWidth, pRenderTarget->mHeight);
 
-        // a cena atual desenha atraves do alvo publicado no forgeui
+        // a cena atual desenha atraves do alvo publicado no forgeui; o
+        // frame() executa o quadro completo da cengine (fases + fixed
+        // timestep) e devolve false quando o jogo pediu saida.
         forgeui::beginDraw(cmd, (float)pRenderTarget->mWidth, (float)pRenderTarget->mHeight, gFontID);
-        gGameManager->render();
+        const bool keepRunning = gEngine->frame(cengine::core::Seconds{ (double)gDt });
 
         cmdDrawUserInterface(cmd);
 
@@ -291,10 +302,7 @@ public:
 
         gFrameIndex = (gFrameIndex + 1) % gDataBufferCount;
 
-        // fim da iteracao: efetiva navegacao pendente e encerra se o jogo
-        // chegou ao estado de saida.
-        gGameManager->onExit();
-        if (gGameManager->shouldExit())
+        if (!keepRunning)
         {
             requestShutdown();
         }

@@ -43,7 +43,9 @@
     <ClCompile Include="$(PuzzleRoot)src\8puzzle\game\service\RecordService.cpp" />
     <ClCompile Include="$(PuzzleRoot)src\8puzzle\game\service\repository\FileRecordRepository.cpp" />
     <ClCompile Include="$(PuzzleRoot)src\8puzzle\game\service\repository\GamePlayRepository.cpp" />
-    <!-- cengine (modulo routing; sem EngineManager — o loop e do The-Forge) -->
+    <!-- cengine (core + routing): o EngineManager entra em MODO HOSPEDADO
+         (0.4.0, task 15) — o The-Forge e dono do loop e chama frame(dt). -->
+    <ClCompile Include="$(CengineRoot)core\src\EngineManager.cpp" />
     <ClCompile Include="$(CengineRoot)modules\routing\src\GameManager.cpp" />
     <ClCompile Include="$(CengineRoot)modules\routing\src\RouterInMemory.cpp" />
     <ClCompile Include="$(CengineRoot)modules\routing\src\SceneRepository.cpp" />
