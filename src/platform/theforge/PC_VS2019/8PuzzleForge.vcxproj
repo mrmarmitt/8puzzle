@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  8PuzzleForge — degrau 3 da PoC The-Forge (.ai/task/01-theforge-poc.md):
+  o jogo completo na plataforma The-Forge.
+
+  Mesma receita do CengineAdapter.vcxproj (pasta PC_VS2019 obrigatoria,
+  LibraryPath no build do The-Forge, eventos sobrescritos, rootsigs por-app
+  via FSL, /std:c++latest + /Zc:char8_t-), acrescentando as fontes do
+  DOMINIO/servicos do 8Puzzle e as cenas da plataforma theforge.
+  Pre-requisitos: solution Unit_Tests do The-Forge buildada na mesma
+  Configuration e checkout de ../cengine na versao usada pelo 8puzzle (0.3.0).
+-->
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- app + plataforma theforge -->
+    <ClCompile Include="..\src\8PuzzleForge\8PuzzleForge.cpp" />
+    <ClCompile Include="..\src\8PuzzleForge\ForgeBoardView.cpp" />
+    <ClCompile Include="..\src\8PuzzleForge\ForgeSceneFactory.cpp" />
+    <ClCompile Include="..\src\8PuzzleForge\ForgeUi.cpp" />
+    <ClCompile Include="..\src\8PuzzleForge\scene\ForgeExitScene.cpp" />
+    <ClCompile Include="..\src\8PuzzleForge\scene\ForgeGameOverScene.cpp" />
+    <ClCompile Include="..\src\8PuzzleForge\scene\ForgeGameScene.cpp" />
+    <ClCompile Include="..\src\8PuzzleForge\scene\ForgeInstructionsScene.cpp" />
+    <ClCompile Include="..\src\8PuzzleForge\scene\ForgeMenuScene.cpp" />
+    <ClCompile Include="..\src\8PuzzleForge\scene\ForgeRecordScene.cpp" />
+    <ClCompile Include="..\src\8PuzzleForge\scene\ForgeSplashScene.cpp" />
+    <!-- dominio e servicos do 8Puzzle (C++ puro, mesmos fontes do CMake) -->
+    <ClCompile Include="$(PuzzleRoot)src\8puzzle\game\GamePlay.cpp" />
+    <ClCompile Include="$(PuzzleRoot)src\8puzzle\game\GameRouter.cpp" />
+    <ClCompile Include="$(PuzzleRoot)src\8puzzle\game\core\Board.cpp" />
+    <ClCompile Include="$(PuzzleRoot)src\8puzzle\game\core\Tile.cpp" />
+    <ClCompile Include="$(PuzzleRoot)src\8puzzle\game\service\GamePlayService.cpp" />
+    <ClCompile Include="$(PuzzleRoot)src\8puzzle\game\service\RecordService.cpp" />
+    <ClCompile Include="$(PuzzleRoot)src\8puzzle\game\service\repository\FileRecordRepository.cpp" />
+    <ClCompile Include="$(PuzzleRoot)src\8puzzle\game\service\repository\GamePlayRepository.cpp" />
+    <!-- cengine (modulo routing; sem EngineManager — o loop e do The-Forge) -->
+    <ClCompile Include="$(CengineRoot)modules\routing\src\GameManager.cpp" />
+    <ClCompile Include="$(CengineRoot)modules\routing\src\RouterInMemory.cpp" />
+    <ClCompile Include="$(CengineRoot)modules\routing\src\SceneRepository.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\8PuzzleForge\GPUCfg\gpu.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <FSLShader Include="..\src\8PuzzleForge\Shaders\FSL\Shaders.list" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A7D3F2E1-90C4-4B8A-8E5F-2C61D4B90A73}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\..\..\..\..\The-Forge\Examples_3\Build_Props\VS\TF_Shared.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <TFBuildRoot>$(TheForgeRoot)Examples_3\Unit_Tests\PC_VS2019\</TFBuildRoot>
+    <PuzzleRoot>$([System.IO.Path]::GetFullPath("$(MSBuildThisFileDirectory)..\..\..\..\"))</PuzzleRoot>
+    <CengineRoot>$([System.IO.Path]::GetFullPath("$(PuzzleRoot)..\cengine\"))</CengineRoot>
+    <LinkIncremental Condition="'$(Configuration)'=='Debug'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)'=='Release'">false</LinkIncremental>
+    <IntDir>$(PuzzleRoot)out\theforge\$(Platform)\$(Configuration)\Intermediate\$(ProjectName)\</IntDir>
+    <OutDir>$(PuzzleRoot)out\theforge\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
+    <LibraryPath>$(TFBuildRoot)$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <LocalDebuggerWorkingDirectory>$(OutDir)</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(TheForgeRoot);$(PuzzleRoot)src;$(CengineRoot)core\include;$(CengineRoot)modules\routing\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <!-- _CRT_SECURE_NO_WARNINGS: o GamePlay.cpp usa localtime (C4996). -->
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <!-- O The-Forge compila com /GR- e sem /EH, mas o jogo precisa dos dois:
+           dynamic_cast no GameRouter (RTTI) e try/catch no FileRecordRepository
+           + throw na cengine (excecoes). -->
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <!-- u8"" -> const char* no DEFINE_APPLICATION_MAIN do The-Forge (ver
+           CengineAdapter.vcxproj). -->
+      <AdditionalOptions>/Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
+      <!-- Os props do The-Forge ligam /WX; o dominio do 8Puzzle (intocado
+           nesta PoC) dispara C4100 (parametros nao usados no StateGame.h) e
+           C4267 (size_t->int no Board.cpp) — suprimidos aqui, o /WX continua
+           valendo para o resto. -->
+      <DisableSpecificWarnings>4100;4267;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <AdditionalDependencies>
+        Xinput9_1_0.lib;
+        ws2_32.lib;
+        Renderer.lib;
+        OS.lib;
+        %(AdditionalDependencies);
+      </AdditionalDependencies>
+      <AdditionalOptions>/ignore:4099</AdditionalOptions>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>$(TFBuildRoot)dpi-aware.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
+    <!-- Sobrescreve os eventos do Examples.x64.props (que assumem output na
+         arvore do The-Forge): shaders de fonte/UI do projeto OS antes do link,
+         DLLs de runtime e configs depois. -->
+    <PreLinkEvent>
+      <Command>
+        if exist "$(TFBuildRoot)$(Platform)\$(Configuration)\OS\Shaders\" xcopy /Y /S /D "$(TFBuildRoot)$(Platform)\$(Configuration)\OS\Shaders\*" "$(OutDir)Shaders\"
+        if exist "$(TFBuildRoot)$(Platform)\$(Configuration)\OS\CompiledShaders\" xcopy /Y /S /D "$(TFBuildRoot)$(Platform)\$(Configuration)\OS\CompiledShaders\*" "$(OutDir)CompiledShaders\"
+      </Command>
+    </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>
+        xcopy "$(TheForgeRoot)Common_3\Graphics\ThirdParty\OpenSource\VulkanSDK\bin\Win32\*.dll" "$(OutDir)" /S /Y /D
+        xcopy "$(TheForgeRoot)Common_3\Graphics\ThirdParty\OpenSource\VulkanSDK\bin\Win32\*.json" "$(OutDir)" /S /Y /D
+        xcopy "$(TheForgeRoot)Common_3\Graphics\ThirdParty\OpenSource\ags\ags_lib\lib\amd_ags_x64.dll" "$(OutDir)amd_ags_x64.dll"* /S /Y /D
+        xcopy "$(TheForgeRoot)Common_3\Graphics\ThirdParty\OpenSource\DirectXShaderCompiler\bin\x64\dxcompiler.dll" "$(OutDir)dxcompiler.dll"* /S /Y /D
+        xcopy "$(TheForgeRoot)Common_3\Graphics\ThirdParty\OpenSource\Direct3d12Agility\bin\x64\*.dll" "$(OutDir)"* /S /Y /D
+        xcopy "$(TheForgeRoot)Common_3\Graphics\ThirdParty\OpenSource\winpixeventruntime\bin\WinPixEventRuntime.dll" "$(OutDir)WinPixEventRunTime.dll"* /S /Y /D
+        rem PathStatement PROPRIO: os mounts do The-Forge assumem o exe dentro
+        rem da arvore dele; o nosso aponta para ../The-Forge a partir do
+        rem out/theforge do 8Puzzle (repos irmaos no workspace).
+        xcopy /Y /D "..\src\$(ProjectName)\PathStatement.txt" "$(OutDir)"
+        xcopy /Y /D "..\src\$(ProjectName)\GPUCfg\gpu.cfg" "$(OutDir)"
+        xcopy "$(TheForgeRoot)Common_3\OS\Windows\pc_gpu.data" "$(OutDir)gpu.data*" /Y /D
+
+        if not exist "$(OutDir)PipelineCaches\" mkdir "$(OutDir)PipelineCaches\"
+        if not exist "$(OutDir)Screenshots\" mkdir "$(OutDir)Screenshots\"
+        if not exist "$(OutDir)Debug\" mkdir "$(OutDir)Debug\"
+        if not exist "$(OutDir)Scripts\" mkdir "$(OutDir)Scripts\"
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <FSLShader>
+      <OutDir>$(OutDir)Shaders</OutDir>
+      <BinaryOutDir>$(OutDir)CompiledShaders</BinaryOutDir>
+      <Compile>true</Compile>
+      <Language>DIRECT3D12</Language>
+    </FSLShader>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(TheForgeRoot)Common_3\Tools\ForgeShadingLanguage\VS\fsl.targets" />
+  </ImportGroup>
+</Project>

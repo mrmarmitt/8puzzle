@@ -1,11 +1,11 @@
-#include "FtxuiGameOverScene.h"
+﻿#include "FtxuiGameOverScene.h"
 
 #include <utility>
 
 #include "8puzzle/game/GameRouter.h"
 #include "8puzzle/game/service/GamePlayService.h"
 #include "8puzzle/game/service/RecordService.h"
-#include "../Format.h"
+#include "../../Format.h"
 #include "../Keyboard.h"
 
 using namespace ftxui;
@@ -37,7 +37,7 @@ void FtxuiGameOverScene::draw() {
     }) | hcenter;
 
     Elements body = {
-        text("Você resolveu o puzzle!") | bold | color(Color::Green) | hcenter,
+        text("VocÃª resolveu o puzzle!") | bold | color(Color::Green) | hcenter,
         text(" "),
         stats,
         text(" "),
@@ -45,15 +45,15 @@ void FtxuiGameOverScene::draw() {
 
     std::string hintText;
     if (m_isRecord) {
-        body.push_back(text("★ NOVO RECORDE! ★") | bold | color(Color::Yellow) | hcenter);
+        body.push_back(text("â˜… NOVO RECORDE! â˜…") | bold | color(Color::Yellow) | hcenter);
         body.push_back(text(" "));
         body.push_back(text("Digite seu nome:") | hcenter);
         body.push_back(
-            text(" " + m_name + "▌ ") | color(Color::Black) | bgcolor(Color::Cyan)
+            text(" " + m_name + "â–Œ ") | color(Color::Black) | bgcolor(Color::Cyan)
             | size(WIDTH, EQUAL, 24) | hcenter);
         hintText = "digite o nome   BACKSPACE apagar   ENTER confirmar";
     } else {
-        body.push_back(text("Sem recorde desta vez — tente de novo!") | dim | hcenter);
+        body.push_back(text("Sem recorde desta vez â€” tente de novo!") | dim | hcenter);
         hintText = "ENTER voltar ao menu";
     }
 
@@ -103,6 +103,6 @@ Record FtxuiGameOverScene::buildRecord() const {
 Record FtxuiGameOverScene::buildRecordAndAssignRecord() const {
     const auto& gamePlay = m_gamePlayService->getGamePlay();
     Record record{gamePlay.getNumberOfMoves(), gamePlay.getDurationMillis()};
-    record.assignRecord(m_name.empty() ? "Anônimo" : m_name, gamePlay.getStartedAtAsString());
+    record.assignRecord(m_name.empty() ? "AnÃ´nimo" : m_name, gamePlay.getStartedAtAsString());
     return record;
 }

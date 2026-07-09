@@ -1,4 +1,4 @@
-#include "FtxuiRecordScene.h"
+﻿#include "FtxuiRecordScene.h"
 
 #include <string>
 #include <utility>
@@ -7,7 +7,7 @@
 #include "8puzzle/game/GameRouter.h"
 #include "8puzzle/game/Record.h"
 #include "8puzzle/game/service/RecordService.h"
-#include "../Format.h"
+#include "../../Format.h"
 #include "../Keyboard.h"
 
 using namespace ftxui;
@@ -47,7 +47,7 @@ void FtxuiRecordScene::draw() {
     rows.push_back(separator());
 
     if (records.empty()) {
-        rows.push_back(text("Nenhum recorde ainda — jogue uma partida!") | dim | hcenter);
+        rows.push_back(text("Nenhum recorde ainda â€” jogue uma partida!") | dim | hcenter);
     } else {
         int position = 1;
         for (const auto& record : records) {

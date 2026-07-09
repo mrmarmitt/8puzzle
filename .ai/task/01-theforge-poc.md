@@ -1,6 +1,6 @@
 # 01 — PoC The-Forge: o 8Puzzle numa plataforma gráfica
 
-- **Status:** in-progress (degraus 0, 1 e 2 ✅ — último em 2026-07-09)
+- **Status:** done (fase 1 concluída em 2026-07-09 — degraus 0 a 3 ✅)
 - **Prioridade:** exploratória (aprendizado de renderização)
 - **Categoria:** Plataforma
 - **Pré-requisitos no ambiente:** ✅ já satisfeitos (ver inventário abaixo)
@@ -100,10 +100,21 @@ sofre). Formalizar isso é a task 15 da cengine.
    - ponte cenas↔plataforma via snapshot por quadro (`ForgeFrame`: input
      bools no `Update`, `Cmd*`/dimensões no `Draw`) — no degrau 3 vira
      contexto injetado via factory, como no FtxuiWindowManager.
-3. **O 8Puzzle de verdade**: cenas The-Forge (splash/menu/jogo/recordes)
-   desenhadas com a UI middleware (painéis/texto/widgets — sem shader
-   próprio), domínio e `GameRouter` intocados. Recordes no mesmo
-   `records.tsv`.
+3. **O 8Puzzle de verdade** ✅ (2026-07-09): `8PuzzleForge.vcxproj` — jogo
+   completo (splash/instruções/menu/jogo/gameOver/recordes) desenhado com o
+   renderizador de fontes, domínio/serviços/`GameRouter`/máquina de estados
+   intocados (mesmos `.cpp` do CMake compilados no vcxproj), recordes em
+   `records.tsv` (mesmo formato TSV; arquivo relativo ao diretório do exe,
+   como nas demais plataformas). A plataforma vive em
+   `src/platform/theforge/src/8PuzzleForge/`: `ForgeUi` (fila de teclado +
+   texto imediato — equivalente do `Keyboard.h`+`present()` da ftxui),
+   `ForgeBoardView`, cenas em `scene/` e `ForgeSceneFactory` nos mesmos
+   códigos de estado. Ajustes que o domínio exigiu nos defaults do The-Forge
+   (documentados no vcxproj): RTTI ligado (`dynamic_cast` do GameRouter),
+   exceções ligadas (`FileRecordRepository`/cengine), `/wd4100 /wd4267` (o
+   `/WX` do The-Forge) e `_CRT_SECURE_NO_WARNINGS` (localtime). `Format.h`
+   (formatMillis) promovido a `src/platform/` — compartilhado entre ftxui e
+   theforge.
 
 ## Critérios de aceite
 
@@ -115,10 +126,45 @@ sofre). Formalizar isso é a task 15 da cengine.
 - [x] Navegação de cenas da cengine funcionando dentro do `IApp` (degrau 2) —
       validado em 2026-07-09: A↔B via ENTER com recriação de cena, ESC
       encerra via estado `exit`; ciclo `onEnter`/`onExit` visível no log.
-- [ ] 8Puzzle jogável de ponta a ponta no The-Forge, com domínio inalterado
-      (degrau 3).
-- [ ] Registro do aprendizado: o que o framework deu de graça e o que a
-      fase 2 precisará substituir (alimenta a task 15 da cengine).
+- [x] 8Puzzle jogável de ponta a ponta no The-Forge, com domínio inalterado
+      (degrau 3) — validado em 2026-07-09: fluxo completo, incluindo fim de
+      jogo com recorde nomeado e persistido.
+- [x] Registro do aprendizado (seção abaixo) — alimenta a task 15 da cengine.
+
+## Aprendizado da fase 1 (para a fase 2 / task 15 da cengine)
+
+**O que o framework `IApp` deu de graça** (a fase 2 terá que substituir):
+
+- Janela + message pump + wndproc (`WindowsBase.cpp`), incluindo resize →
+  `Unload`/`Load` com recriação do swapchain, fullscreen e device lost.
+- Input pronto: bindings declarativos (`inputAddCustomBindings`) com edge de
+  released, `inputGetCharInput` para texto — sem tocar em VK codes/WndProc.
+- Pacing do loop e `dt` com clamp anti-espiral (análogo ao nosso
+  `maxFrameTime`), vsync alternável.
+- Sistemas de fonte/UI carregados e recarregáveis (`load*`/`unload*` por
+  `ReloadDesc`), shaders de fonte/UI herdados do projeto OS.
+- Toda a cola de arquivos: PathStatement/mounts, gpu.cfg/gpu.data, DLLs.
+
+**O que ficou provado sobre a nossa arquitetura:**
+
+- O `GameManager` roda inalterado sob loop alheio — as fases
+  (onEnter/input/update/render/onExit) mapeiam 1:1 nos callbacks
+  `Update(dt)`/`Draw()`. O que a task 15 precisa entregar é só o análogo
+  disso no `EngineManager` (`frame(dt)` preservando o acumulador), não uma
+  mudança no contrato das cenas.
+- dt variável do framework foi suficiente para jogo de tabuleiro; o passo
+  fixo hospedado (task 15) é o que faria isso valer para simulação de
+  verdade.
+- Cenas 100% desacopladas do IApp via ponte por quadro (`ForgeUi`): input em
+  fila no `Update`, alvo de desenho publicado no `Draw`. É o mesmo desenho da
+  plataforma ftxui — o padrão "plataforma = detalhe" se sustentou em três
+  plataformas.
+
+**Custo estimado da fase 2** (modo biblioteca): reescrever janela/wndproc,
+resize→swapchain, input bruto e pacing; manter `initRenderer` + subsistemas
+(`initMemAlloc`/`initFileSystem`/`initLog`) que não exigem `IApp`. Upgrades
+do The-Forge podem quebrar essa cola — decidir se o ganho arquitetural vale
+o custo de manutenção antes de iniciar.
 
 ## Riscos
 

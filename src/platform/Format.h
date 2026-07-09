@@ -5,7 +5,8 @@
 #include <string>
 
 // Formata uma duração em milissegundos como hh:mm:ss.mmm (mesmo formato que a
-// plataforma terminal usava no jogo).
+// plataforma terminal usava no jogo). Compartilhado entre as plataformas
+// (ftxui, theforge) — é std puro, sem dependência de biblioteca gráfica.
 inline std::string formatMillis(const long long millis) {
     const int hours = static_cast<int>(millis / (1000 * 60 * 60));
     const int minutes = static_cast<int>((millis / (1000 * 60)) % 60);

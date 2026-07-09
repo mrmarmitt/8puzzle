@@ -9,12 +9,13 @@ task, com contexto, degraus e critérios de aceite. Status:
 
 | # | Task | Status | Categoria |
 |---|------|--------|-----------|
-| 01 | [PoC The-Forge — plataforma gráfica](01-theforge-poc.md) | todo | Plataforma |
+| 01 | [PoC The-Forge — plataforma gráfica](01-theforge-poc.md) | done | Plataforma |
 
 ## Contexto do projeto
 
 O 8Puzzle é o consumidor de referência da cengine e o laboratório das
 plataformas de UI: o mesmo domínio (Board/GamePlay/services/GameRouter) roda
-hoje em duas interfaces (`src/platform/terminal/` e `src/platform/ftxui/`).
-A próxima fronteira é a plataforma gráfica de verdade (The-Forge), em
-`src/platform/theforge/` (pasta reservada desde o início do projeto).
+hoje em três interfaces — `src/platform/terminal/`, `src/platform/ftxui/` e
+`src/platform/theforge/` (gráfica, via The-Forge; fase 1 da PoC concluída —
+ver task 01). A fase 2 (cengine dona do loop, The-Forge como biblioteca)
+depende da task 15 da cengine.

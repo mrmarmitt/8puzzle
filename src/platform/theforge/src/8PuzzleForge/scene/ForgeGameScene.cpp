@@ -1,4 +1,4 @@
-﻿#include "FtxuiGameScene.h"
+#include "ForgeGameScene.h"
 
 #include <chrono>
 #include <string>
@@ -6,48 +6,37 @@
 
 #include "8puzzle/game/GameRouter.h"
 #include "8puzzle/game/service/GamePlayService.h"
-#include "../BoardView.h"
-#include "../../Format.h"
-#include "../Keyboard.h"
+#include "platform/Format.h"
+#include "../ForgeBoardView.h"
 
-using namespace ftxui;
-
-FtxuiGameScene::FtxuiGameScene(std::shared_ptr<GameRouter> gameRouter,
+ForgeGameScene::ForgeGameScene(std::shared_ptr<GameRouter> gameRouter,
                                std::shared_ptr<GamePlayService> gamePlayService)
     : m_gameRouter(std::move(gameRouter)),
       m_gamePlayService(std::move(gamePlayService)) {}
 
-void FtxuiGameScene::draw() {
+void ForgeGameScene::draw() {
     const auto& gamePlay = m_gamePlayService->getGamePlay();
+    const float h = forgeui::screenHeight();
+    constexpr float kCellSize = 96.0f;
 
-    // O tempo exibido Ã© o mesmo que vale para o recorde: relÃ³gio de parede
-    // desde o inÃ­cio da partida (dt Ã© tempo de simulaÃ§Ã£o; nÃ£o serve aqui).
+    // O tempo exibido e o mesmo que vale para o recorde: relogio de parede
+    // desde o inicio da partida (dt e tempo de simulacao; nao serve aqui).
     const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::system_clock::now() - gamePlay.getStartedAt()).count();
 
-    auto stats = vbox({
-        text("Movimentos") | dim,
-        text(std::to_string(gamePlay.getNumberOfMoves())) | bold | color(Color::Yellow),
-        text(" "),
-        text("Tempo") | dim,
-        text(formatMillis(elapsed)) | bold | color(Color::Yellow),
-    });
+    forgeui::drawTextCentered("8 . PUZZLE - jogo", h * 0.08f, 32.0f, forgeui::color::kTitle);
 
-    auto content = hbox({
-        boardElement(m_board),
-        text("   "),
-        stats | vcenter,
-    });
+    const float boardTop = h * 0.20f;
+    drawBoard(m_board, forgeui::screenWidth() * 0.5f, boardTop, kCellSize);
 
-    present(vbox({
-        filler(),
-        window(text(" 8 Â· PUZZLE â€” jogo "), content) | hcenter,
-        filler(),
-        hints("â†‘/â†“/â†/â†’ deslizar peÃ§a   1-8 mover pelo nÃºmero   ESC menu"),
-    }));
+    const std::string stats = "Movimentos: " + std::to_string(gamePlay.getNumberOfMoves())
+        + "     Tempo: " + formatMillis(elapsed);
+    forgeui::drawTextCentered(stats, boardTop + boardHeight(kCellSize) + 48.0f, 24.0f, forgeui::color::kValue);
+
+    forgeui::drawHints("SETAS deslizar peca   1-8 mover pelo numero   ESC menu");
 }
 
-int FtxuiGameScene::neighborOfEmpty(const int dLine, const int dColumn) const {
+int ForgeGameScene::neighborOfEmpty(const int dLine, const int dColumn) const {
     const auto [emptyLine, emptyColumn] = m_board.getEmptyPosition();
     const int line = emptyLine + dLine;
     const int column = emptyColumn + dColumn;
@@ -58,7 +47,7 @@ int FtxuiGameScene::neighborOfEmpty(const int dLine, const int dColumn) const {
     return m_board.getBoard()[line * 3 + column].getId();
 }
 
-void FtxuiGameScene::tryMove(const int tileId) {
+void ForgeGameScene::tryMove(const int tileId) {
     if (tileId <= 0) {
         return;
     }
@@ -75,12 +64,12 @@ void FtxuiGameScene::tryMove(const int tileId) {
     }
 }
 
-void FtxuiGameScene::input() {
-    const KeyEvent event = readKey();
+void ForgeGameScene::input() {
+    const KeyEvent event = forgeui::readKey();
 
     switch (event.key) {
-        // A seta indica a direÃ§Ã£o em que a PEÃ‡A desliza: â†‘ move a peÃ§a que
-        // estÃ¡ ABAIXO do vazio, e assim por diante.
+        // A seta indica a direcao em que a PECA desliza: seta para cima move
+        // a peca que esta ABAIXO do vazio, e assim por diante.
         case Key::Up:    tryMove(neighborOfEmpty(+1, 0)); break;
         case Key::Down:  tryMove(neighborOfEmpty(-1, 0)); break;
         case Key::Left:  tryMove(neighborOfEmpty(0, +1)); break;
