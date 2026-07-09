@@ -1,6 +1,6 @@
 # 02 — The-Forge fase 2: cengine dona do loop (modo biblioteca)
 
-- **Status:** todo
+- **Status:** in-progress (degrau 0 ✅ em 2026-07-09)
 - **Prioridade:** exploratória (aprendizado de plataforma/GPU)
 - **Categoria:** Plataforma
 - **Depende de:** task 01 ✅ (fase 1 — modo hospedado); task 16 da cengine
@@ -51,10 +51,22 @@ window.present() -> endCmd, submit, queuePresent          (task 16)
 
 ## Degraus
 
-0. **Spike "renderer sem IApp"**: `main()` próprio — janela Win32 crua +
-   `initMemAlloc/FileSystem/Log` + `initRenderer` + `addSwapChain(HWND)` +
-   clear azul-noite + pump mínimo (fechar no X). Prova a tese central antes
-   de tocar na cengine. Sem resize, sem fontes, sem cengine.
+0. **Spike "renderer sem IApp"** ✅ (2026-07-09): `ForgeLibSpike.vcxproj` —
+   `main()` próprio com janela Win32 crua (tamanho fixo, WndProc próprio,
+   pump por `PeekMessage`), `initMemAlloc → initFileSystem → initLog` na
+   ordem do `WindowsMain`, `initGPUConfiguration`/`initRenderer` +
+   `addSwapChain(HWND)` na nossa janela, clear azul-noite, ESC/X fecham
+   limpo. Validado em runtime. Aprendizados:
+   - o link nem puxa o `WindowsBase.obj` — nenhum símbolo do framework é
+     necessário para o renderer como biblioteca (tese central confirmada);
+   - o `DEFINE_APPLICATION_MAIN` era quem exportava
+     `D3D12SDKVersion`/`D3D12SDKPath` (Agility SDK) — sem `IApp`, o exe
+     exporta por conta própria (`D3D12_AGILITY_SDK_VERSION` vem do
+     `TF_Shared.props`);
+   - sem resource loader o submit espera só o semáforo do acquire (não há
+     `flushResourceUpdates`);
+   - `PathStatement.txt`/`gpu.cfg`/`gpu.data` seguem necessários (filesystem
+     e GPU config são subsistemas independentes do framework).
 1. **Texto + input**: sistema de fontes (receita FSL da fase 1: rootsigs
    por-app + shaders do OS) e teclado via WndProc alimentando a fila do
    `ForgeUi` (a API `forgeui` não muda — cenas não percebem).
@@ -69,8 +81,9 @@ window.present() -> endCmd, submit, queuePresent          (task 16)
 
 ## Critérios de aceite
 
-- [ ] Degrau 0: janela própria com clear via The-Forge, sem nenhum símbolo
-      de `IApp`/`WindowsBase` linkado na inicialização.
+- [x] Degrau 0: janela própria com clear via The-Forge, sem nenhum símbolo
+      de `IApp`/`WindowsBase` linkado na inicialização — validado em
+      2026-07-09 (janela estável, encerramento limpo por ESC/X).
 - [ ] Degrau 1: texto renderizado + teclado próprio na fila do `ForgeUi`.
 - [ ] Degrau 2: `EngineManager::start()` dirigindo (fixed timestep incluso),
       navegação entre cenas de teste, resize sem crash.
