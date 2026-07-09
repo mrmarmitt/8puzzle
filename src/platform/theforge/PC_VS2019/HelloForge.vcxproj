@@ -32,6 +32,12 @@
   <ItemGroup>
     <None Include="..\src\HelloForge\GPUCfg\gpu.cfg" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- Compila as root signatures (default/compute.rootsig) que o
+         initRootSignature carrega de CompiledShaders — o projeto OS so fornece
+         os shaders de fonte/UI; os rootsigs sao SEMPRE por-app. -->
+    <FSLShader Include="..\src\HelloForge\Shaders\FSL\Shaders.list" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0FFFC9A8-6B0D-4AE2-9359-B07415D09540}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -123,6 +129,14 @@
       </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <FSLShader>
+      <OutDir>$(OutDir)Shaders</OutDir>
+      <BinaryOutDir>$(OutDir)CompiledShaders</BinaryOutDir>
+      <Compile>true</Compile>
+      <Language>DIRECT3D12</Language>
+    </FSLShader>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -141,5 +155,6 @@
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(TheForgeRoot)Common_3\Tools\ForgeShadingLanguage\VS\fsl.targets" />
   </ImportGroup>
 </Project>

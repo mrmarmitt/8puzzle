@@ -36,6 +36,9 @@
 *.vs
 *.vscode
 
+# Visual Studio (config local por usuário)
+*.vcxproj.user
+
 # CLion
 *.idea
 

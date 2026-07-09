@@ -1,6 +1,6 @@
 # 01 — PoC The-Forge: o 8Puzzle numa plataforma gráfica
 
-- **Status:** in-progress (degrau 0 ✅ em 2026-07-08)
+- **Status:** in-progress (degrau 0 ✅ em 2026-07-08; degrau 1 ✅ em 2026-07-09)
 - **Prioridade:** exploratória (aprendizado de renderização)
 - **Categoria:** Plataforma
 - **Pré-requisitos no ambiente:** ✅ já satisfeitos (ver inventário abaixo)
@@ -69,9 +69,20 @@ sofre). Formalizar isso é a task 15 da cengine.
    no VS2019 atual, incluindo o `10_ScreenSpaceReflections` (um dos mais
    complexos — visibility buffer + reflexões + PBR), rodando e interativo.
    Toolchain, GPU e driver confirmados.
-1. **Hello Forge**: vcxproj novo na solution de exemplos com um `IApp` mínimo
-   desenhando texto via UI middleware do The-Forge (sem 8puzzle). Valida o
-   boilerplate (Init/Load/Draw, FSL, fontes).
+1. **Hello Forge** ✅ (2026-07-09): `IApp` mínimo desenhando texto via UI
+   middleware (sem 8puzzle). Diferente do plano original (vcxproj na solution
+   de exemplos), o projeto E o output vivem no repo do 8puzzle
+   (`src/platform/theforge/PC_VS2019/HelloForge.vcxproj` → `out/theforge/`),
+   com o The-Forge como dependência irmã. Aprendizados registrados:
+   - a pasta do vcxproj PRECISA chamar `PC_VS2019` (o `TF_Shared.props`
+     seleciona os props de plataforma testando o caminho do projeto);
+   - os shaders de fonte/UI vêm prontos do projeto OS (copiados no pre-link),
+     mas `default.rootsig`/`compute.rootsig` são compilados **por app** pelo
+     passo FSL — sem `Shaders.list` + `fsl.targets` o exe abre e fecha
+     (`Failed to open shader binary` → pipelines falham com `0x80070057`);
+   - output fora da árvore do The-Forge exige `PathStatement.txt` próprio
+     (os mounts padrão assumem o exe 6 níveis dentro da árvore dele) e
+     pre-link/post-build sobrescritos com cópias explícitas.
 2. **O adaptador**: o `IApp` hospeda o `GameManager` da cengine (mapeamento
    acima) com uma cena de teste trivial. Fontes da cengine (core + routing) e
    do domínio compilados direto no vcxproj (C++ puro, sem dependência de
@@ -85,7 +96,9 @@ sofre). Formalizar isso é a task 15 da cengine.
 
 - [x] Exemplo oficial roda no ambiente atual (degrau 0) — validado com
       `10_ScreenSpaceReflections` em 2026-07-08.
-- [ ] `IApp` próprio compila e desenha na solution do The-Forge (degrau 1).
+- [x] `IApp` próprio compila e desenha (degrau 1) — validado em 2026-07-09:
+      janela com título "HELLO FORGE" e subtítulo pulsando, buildado do repo
+      do 8puzzle com output em `out/theforge/`.
 - [ ] Navegação de cenas da cengine funcionando dentro do `IApp` (degrau 2).
 - [ ] 8Puzzle jogável de ponta a ponta no The-Forge, com domínio inalterado
       (degrau 3).
