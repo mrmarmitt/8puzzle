@@ -1,6 +1,6 @@
 # 01 — PoC The-Forge: o 8Puzzle numa plataforma gráfica
 
-- **Status:** in-progress (degrau 0 ✅ em 2026-07-08; degrau 1 ✅ em 2026-07-09)
+- **Status:** in-progress (degraus 0, 1 e 2 ✅ — último em 2026-07-09)
 - **Prioridade:** exploratória (aprendizado de renderização)
 - **Categoria:** Plataforma
 - **Pré-requisitos no ambiente:** ✅ já satisfeitos (ver inventário abaixo)
@@ -83,10 +83,23 @@ sofre). Formalizar isso é a task 15 da cengine.
    - output fora da árvore do The-Forge exige `PathStatement.txt` próprio
      (os mounts padrão assumem o exe 6 níveis dentro da árvore dele) e
      pre-link/post-build sobrescritos com cópias explícitas.
-2. **O adaptador**: o `IApp` hospeda o `GameManager` da cengine (mapeamento
-   acima) com uma cena de teste trivial. Fontes da cengine (core + routing) e
-   do domínio compilados direto no vcxproj (C++ puro, sem dependência de
-   plataforma). ⚠️ risco C++23 no VS2019 — ver Riscos.
+2. **O adaptador** ✅ (2026-07-09): `CengineAdapter.vcxproj` — o `IApp` hospeda
+   o `GameManager` da cengine (mapeamento acima) com cenas de teste A↔B +
+   exit, validando navegação, reativação A→B→A (cena recriada, estado
+   zerado) e `shouldExit()` → `requestShutdown()`. Fontes do módulo routing
+   compiladas direto do repo irmão `../cengine` (sem `EngineManager` — o
+   loop é do The-Forge nesta fase). Aprendizados:
+   - ✅ **risco C++23 dissipado**: as fontes da cengine compilaram limpas no
+     VS2019 16.11 com `/std:c++latest`; só foi preciso `/Zc:char8_t-` porque
+     o `DEFINE_APPLICATION_MAIN` atribui `u8""` a `const char*` (regra nova
+     do C++20, problema do The-Forge, não da cengine);
+   - input do app via `inputAddCustomBindings("scene_next; button; K_ENTER;
+     released")` + `inputGetCustomBindingEnum` — NÃO incluir
+     `OS/Input/InputCommon.h` (define globals `gInputValues` etc. e
+     duplicaria símbolos do OS.lib);
+   - ponte cenas↔plataforma via snapshot por quadro (`ForgeFrame`: input
+     bools no `Update`, `Cmd*`/dimensões no `Draw`) — no degrau 3 vira
+     contexto injetado via factory, como no FtxuiWindowManager.
 3. **O 8Puzzle de verdade**: cenas The-Forge (splash/menu/jogo/recordes)
    desenhadas com a UI middleware (painéis/texto/widgets — sem shader
    próprio), domínio e `GameRouter` intocados. Recordes no mesmo
@@ -99,7 +112,9 @@ sofre). Formalizar isso é a task 15 da cengine.
 - [x] `IApp` próprio compila e desenha (degrau 1) — validado em 2026-07-09:
       janela com título "HELLO FORGE" e subtítulo pulsando, buildado do repo
       do 8puzzle com output em `out/theforge/`.
-- [ ] Navegação de cenas da cengine funcionando dentro do `IApp` (degrau 2).
+- [x] Navegação de cenas da cengine funcionando dentro do `IApp` (degrau 2) —
+      validado em 2026-07-09: A↔B via ENTER com recriação de cena, ESC
+      encerra via estado `exit`; ciclo `onEnter`/`onExit` visível no log.
 - [ ] 8Puzzle jogável de ponta a ponta no The-Forge, com domínio inalterado
       (degrau 3).
 - [ ] Registro do aprendizado: o que o framework deu de graça e o que a
@@ -107,10 +122,8 @@ sofre). Formalizar isso é a task 15 da cengine.
 
 ## Riscos
 
-- **C++23 no VS2019** (16.11 tem suporte parcial via `/std:c++latest`): a
-  cengine exige `cxx_std_23`. Se não compilar, instalar **VS2022 Community**
-  (abre as solutions PC_VS2019; o CI da cengine já builda com ele). Testar
-  cedo, no degrau 2.
+- ~~**C++23 no VS2019**~~ resolvido no degrau 2: a cengine compila limpa com
+  `/std:c++latest` no 16.11 (fallback VS2022 não foi necessário).
 - **Boilerplate de renderização** (FSL, ReloadDesc, resource loading): mitigado
   usando a UI middleware e o `01_Transformations` como template — sem shader
   próprio na PoC.
