@@ -85,6 +85,16 @@ O executável e todos os artefatos (shaders compilados, DLLs de runtime, configs
 
 > Também existem na mesma pasta os projetos `HelloForge.vcxproj` e `CengineAdapter.vcxproj` (degraus 1 e 2 da fase 1 — boilerplate mínimo e integração cengine↔IApp) e `ForgeLibSpike.vcxproj` (degraus 0-2 da fase 2 — renderer sem IApp, fontes/input próprios e a cengine assumindo o loop com cenas de teste). São mantidos como referência.
 
+### Distribuição (máquinas sem os repos)
+
+A pasta `out/` **não** é autossuficiente: o `PathStatement.txt` do build resolve a fonte na árvore do The-Forge irmão. Para gerar um pacote portátil:
+
+```powershell
+powershell -File tools\dist-theforge.ps1 -Zip   # gera dist\8PuzzleForgeLib\ e o .zip
+```
+
+O script copia só o necessário (exe, DLLs de runtime, shaders, configs — sem pdb/lib e sem a camada de debug do D3D12), embute a fonte TitilliumText (com a licença OFL) e reescreve o `PathStatement.txt` com mounts locais. Requisitos na máquina de destino (documentados no `LEIA-ME.txt` gerado): Windows 10/11 x64, GPU com D3D12 e o [VC++ Redistributable x64](https://aka.ms/vs/17/release/vc_redist.x64.exe).
+
 ---
 
 ## Como Gerar um Executável

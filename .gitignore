@@ -47,3 +47,6 @@ CMakeUserPresets.json
 
 # Dados de jogo gerados em runtime
 records.tsv
+
+# Pacotes de distribuição (gerados por tools/dist-theforge.ps1)
+dist/
