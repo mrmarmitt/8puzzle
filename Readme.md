@@ -87,13 +87,29 @@ O executável e todos os artefatos (shaders compilados, DLLs de runtime, configs
 
 ### Distribuição (máquinas sem os repos)
 
-A pasta `out/` **não** é autossuficiente: o `PathStatement.txt` do build resolve a fonte na árvore do The-Forge irmão. Para gerar um pacote portátil:
+A pasta `out/` **não** é autossuficiente: o `PathStatement.txt` do build resolve a fonte na árvore do The-Forge irmão. O fluxo completo para distribuir é:
 
 ```powershell
-powershell -File tools\dist-theforge.ps1 -Zip   # gera dist\8PuzzleForgeLib\ e o .zip
+# 1. buildar (se ainda não buildou)
+MSBuild src\platform\theforge\PC_VS2019\8PuzzleForgeLib.vcxproj /p:Configuration=Release /p:Platform=x64
+
+# 2. empacotar — gera dist\8PuzzleForgeLib\ e dist\8PuzzleForgeLib.zip (~22 MB)
+powershell -File tools\dist-theforge.ps1 -Zip
+
+# 3. enviar o zip; na máquina de destino: descompactar e rodar 8PuzzleForgeLib.exe
 ```
 
-O script copia só o necessário (exe, DLLs de runtime, shaders, configs — sem pdb/lib e sem a camada de debug do D3D12), embute a fonte TitilliumText (com a licença OFL) e reescreve o `PathStatement.txt` com mounts locais. Requisitos na máquina de destino (documentados no `LEIA-ME.txt` gerado): Windows 10/11 x64, GPU com D3D12 e o [VC++ Redistributable x64](https://aka.ms/vs/17/release/vc_redist.x64.exe).
+O script (`tools/dist-theforge.ps1`, parâmetros `-Project`/`-Configuration`/`-Zip`):
+
+- copia só o necessário: exe, DLLs de runtime (Agility SDK, dxcompiler...), shaders compilados e configs — **sem** `pdb`/`lib`/`exp`, sem a camada de debug do D3D12 e sem o `records.tsv` do desenvolvedor;
+- **embute a fonte** TitilliumText (com a licença OFL, exigida por ela) e reescreve o `PathStatement.txt` com mounts locais — era a única referência à árvore do The-Forge;
+- gera um `LEIA-ME.txt` com requisitos e controles para quem recebe.
+
+Requisitos na máquina de destino: Windows 10/11 x64, GPU com D3D12 e o [VC++ Redistributable x64](https://aka.ms/vs/17/release/vc_redist.x64.exe) (se faltar, o Windows acusa `VCRUNTIME140.dll não encontrado`).
+
+> **Nota sobre GPUs** (aprendida em teste real): o `gpu.cfg` dos exemplos do The-Forge bane GPUs Intel — e no The-Forge as regras de seleção também valem como *requisito de suporte* da GPU escolhida, então um notebook em que a Intel integrada vence a seleção falhava com `GPU Unsupported`. Os `gpu.cfg` deste repo removem essa regra de propósito (o jogo é só texto; roda em qualquer D3D12, incluindo integradas). Ao atualizar o The-Forge, **não** recopie o `gpu.cfg` dos exemplos por cima — ver o comentário no topo dos nossos arquivos.
+>
+> Em caso de problema na máquina de destino, o diagnóstico está no `8PuzzleForgeLib.log` criado ao lado do exe.
 
 ---
 
