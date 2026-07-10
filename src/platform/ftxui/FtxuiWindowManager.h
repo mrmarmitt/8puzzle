@@ -17,5 +17,9 @@ class FtxuiWindowManager final : public cengine::core::IWindowManager {
 public:
     void init() override;
     void update() override;
+    // Vazio (cengine 0.5.0): a apresentação já acontece no draw das cenas
+    // (FtxuiScene::present() imprime a tela). Migrar o Print() para cá é
+    // melhoria opcional registrada na task 16 da cengine.
+    void present() override {}
     void cleanup() override;
 };
