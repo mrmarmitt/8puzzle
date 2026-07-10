@@ -121,10 +121,26 @@ window.present() -> endCmd, submit, queuePresent          (task 16)
      RTTI não foi necessário: o spike não usa o `GameRouter` do domínio);
    - a fiação do `main()` ficou idêntica à do `main_ftxui.cpp` — a tese da
      fase 2 (trocar plataforma sem tocar domínio/engine) se sustenta.
-3. **O jogo**: 8Puzzle completo — as cenas de `src/platform/theforge/src/
-   8PuzzleForge/scene/` são reaproveitadas (falam só com `forgeui`); muda o
-   casco: sai o `IApp`, entra `main()` + `EngineManager` + window manager
-   (fiação idêntica ao `main_ftxui.cpp`).
+3. **O jogo** ✅ (2026-07-10): 8Puzzle completo — `8PuzzleForgeLib` — as
+   cenas de `src/platform/theforge/src/8PuzzleForge/scene/` reaproveitadas
+   com **diff zero** (falam só com `forgeui`); mudou só o casco: sai o
+   `IApp`, entra `main()` + `EngineManager` + `TheForgeWindowManager`
+   (fiação idêntica ao `main_ftxui.cpp`). Validado em runtime: fluxo
+   completo (splash → menu → jogo → recordes/game over), `records.tsv` no
+   mesmo formato das outras plataformas, resize durante o jogo, saída pelo
+   menu e pelo X. Aprendizados:
+   - a tese central da PoC se confirmou de ponta a ponta: as 7 cenas
+     compilam idênticas nos DOIS cascos (hospedado e biblioteca) — a ponte
+     `forgeui` isolou a plataforma por completo; a única diferença é quem
+     alimenta a fila de teclado (WndProc próprio × custom bindings);
+   - o casco novo custou 1 arquivo de main (~100 linhas, união da fiação do
+     `main_ftxui.cpp` com os subsistemas de processo do WindowsMain) + 1
+     vcxproj (união mecânica das receitas do spike e da fase 1: RTTI +
+     `/EH` + supressões do domínio);
+   - o `TheForgeWindowManager` do degrau 2 foi reaproveitado como está
+     (compilado de `ForgeLibSpike/` — mesmo padrão do `ForgeUi`
+     compartilhado); o middleware de UI da fase 1 (`initUserInterface`/
+     `uiIsFocused`) não fez falta: o jogo é 100% texto via fontstash.
 
 ## Critérios de aceite
 
@@ -138,8 +154,9 @@ window.present() -> endCmd, submit, queuePresent          (task 16)
       navegação entre cenas de teste, resize sem crash — validado em
       2026-07-10 (relógio simulado a 60 passos/s, A↔B, resize/maximizar/
       minimizar, ESC e X saindo limpo).
-- [ ] Degrau 3: 8Puzzle jogável de ponta a ponta, cenas da fase 1
-      reaproveitadas sem mudança de contrato, `records.tsv` funcionando.
+- [x] Degrau 3: 8Puzzle jogável de ponta a ponta, cenas da fase 1
+      reaproveitadas sem mudança de contrato (diff zero), `records.tsv`
+      funcionando — validado em 2026-07-10.
 - [ ] Registro comparativo: fase 1 (hospedado) × fase 2 (biblioteca) — custo
       real da cola, recomendação de qual modo usar por padrão.
 
