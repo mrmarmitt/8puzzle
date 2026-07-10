@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ForgeLibSpike — degraus 0 e 1 da fase 2
+  ForgeLibSpike — degraus 0, 1 e 2 da fase 2
   (.ai/task/02-theforge-fase2-library-mode.md): The-Forge como BIBLIOTECA,
   sem IApp/WindowsMain.
 
@@ -8,7 +8,9 @@
   no build do The-Forge). O degrau 1 trouxe de volta a cadeia de fontes:
   passo FSL (rootsigs por-app), copia dos shaders de fonte do projeto OS no
   pre-link, e o ForgeUi compartilhado com o 8PuzzleForge (fila de teclado +
-  texto — dai o include dir na raiz de src\ e o C++ latest).
+  texto — dai o include dir na raiz de src\ e o C++ latest). O degrau 2
+  acrescenta a cengine (core + routing, checkout irmao em ../cengine na
+  versao 0.5.0) — dai o /EH ligado (a cengine usa excecoes).
 -->
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
@@ -23,7 +25,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\ForgeLibSpike\ForgeLibSpike.cpp" />
+    <ClCompile Include="..\src\ForgeLibSpike\TheForgeWindowManager.cpp" />
     <ClCompile Include="..\src\8PuzzleForge\ForgeUi.cpp" />
+    <!-- cengine (core + routing): EngineManager::start() e dono do loop —
+         modo PROPRIO, com o par update()/present() da 0.5.0 (task 16). -->
+    <ClCompile Include="$(CengineRoot)core\src\EngineManager.cpp" />
+    <ClCompile Include="$(CengineRoot)modules\routing\src\GameManager.cpp" />
+    <ClCompile Include="$(CengineRoot)modules\routing\src\RouterInMemory.cpp" />
+    <ClCompile Include="$(CengineRoot)modules\routing\src\SceneRepository.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\ForgeLibSpike\GPUCfg\gpu.cfg" />
@@ -62,6 +71,7 @@
   <PropertyGroup>
     <TFBuildRoot>$(TheForgeRoot)Examples_3\Unit_Tests\PC_VS2019\</TFBuildRoot>
     <PuzzleRoot>$([System.IO.Path]::GetFullPath("$(MSBuildThisFileDirectory)..\..\..\..\"))</PuzzleRoot>
+    <CengineRoot>$([System.IO.Path]::GetFullPath("$(PuzzleRoot)..\cengine\"))</CengineRoot>
     <LinkIncremental Condition="'$(Configuration)'=='Debug'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)'=='Release'">false</LinkIncremental>
     <IntDir>$(PuzzleRoot)out\theforge\$(Platform)\$(Configuration)\Intermediate\$(ProjectName)\</IntDir>
@@ -73,8 +83,11 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(TheForgeRoot);$(MSBuildThisFileDirectory)..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(TheForgeRoot);$(MSBuildThisFileDirectory)..\src;$(CengineRoot)core\include;$(CengineRoot)modules\routing\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <!-- A cengine usa excecoes (throw no EngineManager/SceneRepository);
+           o The-Forge compila sem /EH — ligamos so neste projeto. -->
+      <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>

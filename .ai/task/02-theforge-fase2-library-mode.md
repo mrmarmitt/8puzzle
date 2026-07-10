@@ -1,7 +1,7 @@
 # 02 — The-Forge fase 2: cengine dona do loop (modo biblioteca)
 
-- **Status:** in-progress (degraus 0 e 1 ✅; próximo: degrau 2, que consome a
-  task 16 da cengine)
+- **Status:** in-progress (degraus 0, 1 e 2 ✅; falta o degrau 3 — o jogo —
+  e o registro comparativo final)
 - **Prioridade:** exploratória (aprendizado de plataforma/GPU)
 - **Categoria:** Plataforma
 - **Depende de:** task 01 ✅ (fase 1 — modo hospedado); task 16 da cengine
@@ -93,10 +93,34 @@ window.present() -> endCmd, submit, queuePresent          (task 16)
      o WndProc enfileira na MESMA fila que o `beginInput()` (modo hospedado)
      alimenta — o `ForgeUi.cpp` é compilado nos dois cascos e as cenas do
      degrau 3 não vão perceber a troca.
-2. **cengine assume o loop**: `TheForgeWindowManager : IWindowManager`
-   (janela + pump + boilerplate GPU em `update()`/`present()`) +
-   `EngineManager::start()` com cena de teste. Consome a task 16 da cengine.
-   Resize básico aqui (recriar swapchain no `WM_SIZE`).
+2. **cengine assume o loop** ✅ (2026-07-10): `TheForgeWindowManager :
+   IWindowManager` (janela + pump + boilerplate GPU em
+   `update()`/`present()`) + `EngineManager::start()` com duas cenas de
+   teste navegáveis. Consome a cengine 0.5.0 (task 16) — primeira validação
+   real do gancho `present()`. Resize recriando o swapchain no `WM_SIZE`.
+   Validado em runtime (fixed timestep a 60 passos/s, navegação A↔B,
+   resize/maximizar/minimizar sem crash, ESC e X encerram limpo).
+   Aprendizados:
+   - o par `update()`/`present()` da 0.5.0 mapeia 1:1 no quadro de GPU:
+     `update()` = pump + resize pendente + acquire + beginCmd + barriers +
+     `forgeui::beginDraw`; `present()` = endCmd + submit + queuePresent — o
+     command buffer fica ABERTO entre os dois e as cenas desenham no meio,
+     sem conhecer o window manager;
+   - fechar a janela vira INPUT: o `WM_CLOSE` (X) entra na fila do forgeui
+     como Escape e quem decide sair é a cena/router — a janela só é
+     destruída no `cleanup()`, depois do loop terminar (o último quadro é
+     apresentado, confirmando a decisão da task 16);
+   - resize: `WM_SIZE` só grava pending (nunca 0x0 do minimizar); o
+     `update()` aplica com `waitQueueIdle` →
+     `unloadFontSystem(RELOAD_TYPE_RESIZE)` → remove/addSwapChain →
+     `loadFontSystem(RELOAD_TYPE_RESIZE)` — o protocolo RELOAD dos apps
+     IApp, sem framework. Limitação conhecida: durante o arrasto o modal
+     loop do Win32 segura o pump (imagem congela; ajusta ao soltar);
+   - a cengine roda inteira no MSVC do projeto (exceções ligadas só neste
+     vcxproj — `/EH` — porque `EngineManager`/`SceneRepository` usam throw;
+     RTTI não foi necessário: o spike não usa o `GameRouter` do domínio);
+   - a fiação do `main()` ficou idêntica à do `main_ftxui.cpp` — a tese da
+     fase 2 (trocar plataforma sem tocar domínio/engine) se sustenta.
 3. **O jogo**: 8Puzzle completo — as cenas de `src/platform/theforge/src/
    8PuzzleForge/scene/` são reaproveitadas (falam só com `forgeui`); muda o
    casco: sai o `IApp`, entra `main()` + `EngineManager` + window manager
@@ -110,8 +134,10 @@ window.present() -> endCmd, submit, queuePresent          (task 16)
 - [x] Degrau 1: texto renderizado + teclado próprio na fila do `ForgeUi` —
       validado em 2026-07-10 (demo de digitação + contador de setas, ESC/X
       encerram limpo).
-- [ ] Degrau 2: `EngineManager::start()` dirigindo (fixed timestep incluso),
-      navegação entre cenas de teste, resize sem crash.
+- [x] Degrau 2: `EngineManager::start()` dirigindo (fixed timestep incluso),
+      navegação entre cenas de teste, resize sem crash — validado em
+      2026-07-10 (relógio simulado a 60 passos/s, A↔B, resize/maximizar/
+      minimizar, ESC e X saindo limpo).
 - [ ] Degrau 3: 8Puzzle jogável de ponta a ponta, cenas da fase 1
       reaproveitadas sem mudança de contrato, `records.tsv` funcionando.
 - [ ] Registro comparativo: fase 1 (hospedado) × fase 2 (biblioteca) — custo
