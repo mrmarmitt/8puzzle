@@ -23,8 +23,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <!-- casco novo (main + window manager do degrau 2) -->
-    <ClCompile Include="..\src\8PuzzleForgeLib\8PuzzleForgeLib.cpp" />
+    <!-- casco novo: entry point no padrao dos irmaos (src/main_*.cpp) +
+         window manager do degrau 2 -->
+    <ClCompile Include="$(PuzzleRoot)src\main_theforge.cpp" />
     <ClCompile Include="..\src\ForgeLibSpike\TheForgeWindowManager.cpp" />
     <!-- plataforma theforge da fase 1, reaproveitada SEM MUDANCA -->
     <ClCompile Include="..\src\8PuzzleForge\ForgeBoardView.cpp" />

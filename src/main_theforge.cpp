@@ -1,5 +1,8 @@
-// 8PuzzleForgeLib — degrau 3 da fase 2 (.ai/task/02-theforge-fase2-library-mode.md):
-// o 8Puzzle completo com a CENGINE dona do loop e o The-Forge como BIBLIOTECA.
+// Entry point da plataforma The-Forge em MODO BIBLIOTECA (8PuzzleForgeLib —
+// degrau 3 da fase 2, .ai/task/02-theforge-fase2-library-mode.md): o 8Puzzle
+// completo com a CENGINE dona do loop. Mesmo padrao dos irmaos main.cpp
+// (terminal) e main_ftxui.cpp (FTXUI): so troca a plataforma — window
+// manager e cenas.
 //
 // E o mesmo jogo do 8PuzzleForge (fase 1, modo hospedado) com o casco
 // trocado: sai o IApp/DEFINE_APPLICATION_MAIN, entra main() + EngineManager +
@@ -8,8 +11,10 @@
 // elas so falam com o forgeui, e a fila de teclado agora e alimentada pelo
 // WndProc proprio (em vez do input system do framework).
 //
-// Fiacao identica ao main_ftxui.cpp: dominio, servicos, GameRouter e maquina
-// de estados intocados; recordes no mesmo records.tsv.
+// Ao contrario dos irmaos, este main NAO e um alvo CMake: compila no
+// 8PuzzleForgeLib.vcxproj (MSBuild), que reutiliza a cadeia de build do
+// The-Forge — dai os subsistemas de processo (initMemAlloc/initFileSystem/
+// initLog) e os exports do Agility SDK aqui dentro.
 
 // cengine + jogo — C++ puro, ANTES dos headers do The-Forge (IMemory.h por ultimo).
 #include <cengine/core/EngineManager.hpp>
