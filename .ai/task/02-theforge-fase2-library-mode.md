@@ -1,6 +1,7 @@
 # 02 — The-Forge fase 2: cengine dona do loop (modo biblioteca)
 
-- **Status:** in-progress (degrau 0 ✅ em 2026-07-09)
+- **Status:** in-progress (degraus 0 e 1 ✅; próximo: degrau 2, que consome a
+  task 16 da cengine)
 - **Prioridade:** exploratória (aprendizado de plataforma/GPU)
 - **Categoria:** Plataforma
 - **Depende de:** task 01 ✅ (fase 1 — modo hospedado); task 16 da cengine
@@ -67,9 +68,31 @@ window.present() -> endCmd, submit, queuePresent          (task 16)
      `flushResourceUpdates`);
    - `PathStatement.txt`/`gpu.cfg`/`gpu.data` seguem necessários (filesystem
      e GPU config são subsistemas independentes do framework).
-1. **Texto + input**: sistema de fontes (receita FSL da fase 1: rootsigs
-   por-app + shaders do OS) e teclado via WndProc alimentando a fila do
-   `ForgeUi` (a API `forgeui` não muda — cenas não percebem).
+1. **Texto + input** ✅ (2026-07-10): sistema de fontes (receita FSL da fase
+   1: rootsigs por-app + shaders do OS) e teclado via WndProc alimentando a
+   fila do `ForgeUi` (a API `forgeui` não muda — cenas não percebem).
+   Validado em runtime (texto TitilliumText, digitação via `WM_CHAR`,
+   setas/enter/backspace via `WM_KEYDOWN`). Aprendizados:
+   - **dependência oculta confirmada** (risco previsto): o
+     `platformInitFontSystem()` dimensiona o contexto fontstash pelo DPI do
+     monitor e para isso dereferencia o global `gWindow` e a lista de
+     monitores do window system (`getActiveMonitorIdx()` /
+     `getMonitorDpiScale()`, `WindowsWindow.cpp`);
+   - a cola mínima replica o que o `WindowsBase` faz: chamar
+     `initWindowSystem()` (autocontido — preenche os monitores via
+     `collectMonitorInfo()`) e apontar `gWindow` (extern) para um
+     `WindowDesc` próprio com o nosso HWND, ANTES do
+     `platformInitFontSystem()`. São 5 símbolos `extern` do OS.lib, todos
+     documentados no spike;
+   - a cadeia completa de fontes em modo biblioteca: resource loader →
+     rootsigs (`INIT_RS_DESC`) → `fntDefineFonts` → `initFontSystem` →
+     swapchain → `loadFontSystem(RELOAD_TYPE_ALL)` →
+     `waitForAllResourceLoads`; com resource loader ativo, o submit passa a
+     esperar TAMBÉM o semáforo do `flushResourceUpdates` (além do acquire);
+   - o `ForgeUi` ganhou `pushKey(KeyEvent)` como entrada do modo biblioteca:
+     o WndProc enfileira na MESMA fila que o `beginInput()` (modo hospedado)
+     alimenta — o `ForgeUi.cpp` é compilado nos dois cascos e as cenas do
+     degrau 3 não vão perceber a troca.
 2. **cengine assume o loop**: `TheForgeWindowManager : IWindowManager`
    (janela + pump + boilerplate GPU em `update()`/`present()`) +
    `EngineManager::start()` com cena de teste. Consome a task 16 da cengine.
@@ -84,7 +107,9 @@ window.present() -> endCmd, submit, queuePresent          (task 16)
 - [x] Degrau 0: janela própria com clear via The-Forge, sem nenhum símbolo
       de `IApp`/`WindowsBase` linkado na inicialização — validado em
       2026-07-09 (janela estável, encerramento limpo por ESC/X).
-- [ ] Degrau 1: texto renderizado + teclado próprio na fila do `ForgeUi`.
+- [x] Degrau 1: texto renderizado + teclado próprio na fila do `ForgeUi` —
+      validado em 2026-07-10 (demo de digitação + contador de setas, ESC/X
+      encerram limpo).
 - [ ] Degrau 2: `EngineManager::start()` dirigindo (fixed timestep incluso),
       navegação entre cenas de teste, resize sem crash.
 - [ ] Degrau 3: 8Puzzle jogável de ponta a ponta, cenas da fase 1

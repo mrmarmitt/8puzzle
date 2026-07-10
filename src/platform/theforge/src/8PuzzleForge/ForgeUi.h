@@ -46,14 +46,21 @@ inline constexpr uint32_t kDim = 0xff9a9a9a;
 inline constexpr uint32_t kFaint = 0xff5a5a5a;
 } // namespace color
 
-// --- ciclo de vida (chamado pelo IApp) ---
+// --- ciclo de vida (chamado pelo casco da plataforma) ---
 
-// Registra os custom bindings de teclado (uma vez, no Init).
+// Modo hospedado (IApp): registra os custom bindings de teclado (uma vez,
+// no Init).
 void initBindings();
 
-// Captura os edges de tecla + caracteres digitados do quadro para a fila.
+// Modo hospedado (IApp): captura os edges de tecla + caracteres digitados do
+// quadro para a fila, via sistema de input do framework.
 // @param acceptInput false suprime a captura (ex.: UI middleware com foco).
 void beginInput(bool acceptInput);
+
+// Modo biblioteca (fase 2): enfileira um evento vindo do WndProc proprio
+// (WM_KEYDOWN/WM_CHAR). Mesmo destino do beginInput — as cenas nao percebem
+// qual casco alimentou a fila.
+void pushKey(KeyEvent event);
 
 // Publica o alvo de desenho do quadro (chamado no Draw, antes do render()).
 void beginDraw(Cmd* cmd, float width, float height, uint32_t fontID);

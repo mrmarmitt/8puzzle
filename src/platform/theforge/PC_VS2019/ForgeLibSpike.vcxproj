@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ForgeLibSpike — degrau 0 da fase 2 (.ai/task/02-theforge-fase2-library-mode.md):
-  The-Forge como BIBLIOTECA, sem IApp/WindowsMain.
+  ForgeLibSpike — degraus 0 e 1 da fase 2
+  (.ai/task/02-theforge-fase2-library-mode.md): The-Forge como BIBLIOTECA,
+  sem IApp/WindowsMain.
 
   Mesma receita de build dos demais (pasta PC_VS2019 obrigatoria, LibraryPath
-  no build do The-Forge), porem MINIMA: sem passo FSL (nenhum shader proprio
-  nem rootsig — o spike so limpa a tela via load action) e sem copia dos
-  shaders do projeto OS (sem fontes/UI). O post-build copia apenas as DLLs de
-  runtime (Agility SDK e o exe exporta D3D12SDKVersion por conta propria),
-  PathStatement proprio e configs de GPU.
+  no build do The-Forge). O degrau 1 trouxe de volta a cadeia de fontes:
+  passo FSL (rootsigs por-app), copia dos shaders de fonte do projeto OS no
+  pre-link, e o ForgeUi compartilhado com o 8PuzzleForge (fila de teclado +
+  texto — dai o include dir na raiz de src\ e o C++ latest).
 -->
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
@@ -23,10 +23,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\ForgeLibSpike\ForgeLibSpike.cpp" />
+    <ClCompile Include="..\src\8PuzzleForge\ForgeUi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\ForgeLibSpike\GPUCfg\gpu.cfg" />
     <None Include="..\src\ForgeLibSpike\PathStatement.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <FSLShader Include="..\src\ForgeLibSpike\Shaders\FSL\Shaders.list" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6C58F0D2-1B7E-4C4A-B9D3-8A2E5F41C906}</ProjectGuid>
@@ -69,8 +73,10 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(TheForgeRoot);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(TheForgeRoot);$(MSBuildThisFileDirectory)..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
     <Link>
@@ -88,6 +94,13 @@
     <Manifest>
       <AdditionalManifestFiles>$(TFBuildRoot)dpi-aware.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
+    <!-- shaders de fonte do projeto OS (fontstash) — mesma copia da fase 1 -->
+    <PreLinkEvent>
+      <Command>
+        if exist "$(TFBuildRoot)$(Platform)\$(Configuration)\OS\Shaders\" xcopy /Y /S /D "$(TFBuildRoot)$(Platform)\$(Configuration)\OS\Shaders\*" "$(OutDir)Shaders\"
+        if exist "$(TFBuildRoot)$(Platform)\$(Configuration)\OS\CompiledShaders\" xcopy /Y /S /D "$(TFBuildRoot)$(Platform)\$(Configuration)\OS\CompiledShaders\*" "$(OutDir)CompiledShaders\"
+      </Command>
+    </PreLinkEvent>
     <PostBuildEvent>
       <Command>
         xcopy "$(TheForgeRoot)Common_3\Graphics\ThirdParty\OpenSource\ags\ags_lib\lib\amd_ags_x64.dll" "$(OutDir)amd_ags_x64.dll"* /S /Y /D
@@ -119,5 +132,16 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <FSLShader>
+      <OutDir>$(OutDir)Shaders</OutDir>
+      <BinaryOutDir>$(OutDir)CompiledShaders</BinaryOutDir>
+      <Compile>true</Compile>
+      <Language>DIRECT3D12</Language>
+    </FSLShader>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(TheForgeRoot)Common_3\Tools\ForgeShadingLanguage\VS\fsl.targets" />
+  </ImportGroup>
 </Project>

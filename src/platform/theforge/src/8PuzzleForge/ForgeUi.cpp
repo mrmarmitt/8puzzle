@@ -97,6 +97,8 @@ void beginInput(const bool acceptInput)
     }
 }
 
+void pushKey(const KeyEvent event) { push(event.key, event.character); }
+
 void beginDraw(Cmd* cmd, const float width, const float height, const uint32_t fontID)
 {
     gCmd = cmd;
