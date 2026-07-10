@@ -23,11 +23,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <!-- casco novo: entry point no padrao dos irmaos (src/main_*.cpp) +
-         window manager do degrau 2 -->
+    <!-- casco: entry point no padrao dos irmaos (src/main_*.cpp) -->
     <ClCompile Include="$(PuzzleRoot)src\main_theforge.cpp" />
-    <ClCompile Include="..\src\ForgeLibSpike\TheForgeWindowManager.cpp" />
-    <!-- plataforma theforge da fase 1, reaproveitada SEM MUDANCA -->
+    <!-- plataforma theforge (8PuzzleForge\ = pasta de producao: ponte
+         forgeui, cenas e window manager) -->
+    <ClCompile Include="..\src\8PuzzleForge\TheForgeWindowManager.cpp" />
     <ClCompile Include="..\src\8PuzzleForge\ForgeBoardView.cpp" />
     <ClCompile Include="..\src\8PuzzleForge\ForgeSceneFactory.cpp" />
     <ClCompile Include="..\src\8PuzzleForge\ForgeUi.cpp" />

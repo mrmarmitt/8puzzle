@@ -30,7 +30,7 @@
 #include "8puzzle/game/state/StateGame.h"
 
 #include "8PuzzleForge/ForgeSceneFactory.h"
-#include "ForgeLibSpike/TheForgeWindowManager.h"
+#include "8PuzzleForge/TheForgeWindowManager.h"
 
 #include <memory>
 

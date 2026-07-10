@@ -23,7 +23,7 @@
 #include <cengine/routing/StateCodes.hpp>
 
 #include "8PuzzleForge/ForgeUi.h"
-#include "TheForgeWindowManager.h"
+#include "8PuzzleForge/TheForgeWindowManager.h"
 
 #include <cstdio>
 #include <memory>

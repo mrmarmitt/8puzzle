@@ -139,8 +139,10 @@ window.present() -> endCmd, submit, queuePresent          (task 16)
      vcxproj (união mecânica das receitas do spike e da fase 1: RTTI +
      `/EH` + supressões do domínio);
    - o `TheForgeWindowManager` do degrau 2 foi reaproveitado como está
-     (compilado de `ForgeLibSpike/` — mesmo padrão do `ForgeUi`
-     compartilhado); o middleware de UI da fase 1 (`initUserInterface`/
+     (na época compilado de `ForgeLibSpike/`; depois movido para
+     `8PuzzleForge/`, a pasta de produção da plataforma — o spike passou a
+     depender dela, nunca o contrário); o middleware de UI da fase 1
+     (`initUserInterface`/
      `uiIsFocused`) não fez falta: o jogo é 100% texto via fontstash.
 
 ## Critérios de aceite

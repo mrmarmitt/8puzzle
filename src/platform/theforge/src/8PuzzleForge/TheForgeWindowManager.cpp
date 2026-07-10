@@ -12,7 +12,7 @@
 #include "Common_3/Graphics/FSL/defaults.h"
 
 // fila de teclado + alvo de desenho — o WndProc publica, as cenas consomem
-#include "8PuzzleForge/ForgeUi.h"
+#include "ForgeUi.h"
 
 #include <cstdlib>
 

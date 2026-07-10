@@ -25,7 +25,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\ForgeLibSpike\ForgeLibSpike.cpp" />
-    <ClCompile Include="..\src\ForgeLibSpike\TheForgeWindowManager.cpp" />
+    <!-- pecas de producao compartilhadas: a plataforma mora em 8PuzzleForge\
+         (o spike depende dela, nunca o contrario) -->
+    <ClCompile Include="..\src\8PuzzleForge\TheForgeWindowManager.cpp" />
     <ClCompile Include="..\src\8PuzzleForge\ForgeUi.cpp" />
     <!-- cengine (core + routing): EngineManager::start() e dono do loop —
          modo PROPRIO, com o par update()/present() da 0.5.0 (task 16). -->
