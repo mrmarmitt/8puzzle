@@ -1,7 +1,8 @@
 # 02 — The-Forge fase 2: cengine dona do loop (modo biblioteca)
 
-- **Status:** in-progress (degraus 0, 1 e 2 ✅; falta o degrau 3 — o jogo —
-  e o registro comparativo final)
+- **Status:** ✅ done (2026-07-10) — os 4 degraus validados em runtime e o
+  registro comparativo abaixo. A visão original do projeto está concluída:
+  a cengine gerencia o loop e o The-Forge é só o motor gráfico.
 - **Prioridade:** exploratória (aprendizado de plataforma/GPU)
 - **Categoria:** Plataforma
 - **Depende de:** task 01 ✅ (fase 1 — modo hospedado); task 16 da cengine
@@ -157,8 +158,37 @@ window.present() -> endCmd, submit, queuePresent          (task 16)
 - [x] Degrau 3: 8Puzzle jogável de ponta a ponta, cenas da fase 1
       reaproveitadas sem mudança de contrato (diff zero), `records.tsv`
       funcionando — validado em 2026-07-10.
-- [ ] Registro comparativo: fase 1 (hospedado) × fase 2 (biblioteca) — custo
-      real da cola, recomendação de qual modo usar por padrão.
+- [x] Registro comparativo: fase 1 (hospedado) × fase 2 (biblioteca) — custo
+      real da cola, recomendação de qual modo usar por padrão (seção
+      abaixo, 2026-07-10).
+
+## Registro comparativo: fase 1 (hospedado) × fase 2 (biblioteca)
+
+O que ficou IGUAL nos dois modos (e é a conclusão mais importante da PoC):
+domínio, serviços, máquina de estados, as 7 cenas (`forgeui` isolou a
+plataforma com diff zero), a receita de build do The-Forge (FSL + shaders do
+OS + DLLs) e o fixed timestep (dentro do `EngineManager` desde a 0.4.0).
+
+| | Fase 1 — hospedado (`8PuzzleForge`) | Fase 2 — biblioteca (`8PuzzleForgeLib`) |
+|---|---|---|
+| Dono do loop | `IApp`/WindowsMain; cengine via `frame(dt)` | cengine (`start()` + `update()`/`present()` da 0.5.0) |
+| Cola fora de API pública | **zero** extern | **5 externs** do OS.lib (window system + fontstash) |
+| Código de casco | ~330 linhas (IApp com GPU no Draw) | ~100 (main) + ~450 (TheForgeWindowManager, reutilizável) |
+| Janela/input/resize | do framework (de graça, incl. fullscreen) | próprios (WndProc → fila do forgeui; resize recria swapchain; modal loop congela no arrasto) |
+| Device lost / GPU switch | tratado pelo WindowsMain | fora do escopo (log + sair) |
+| UI middleware (imgui) | disponível (`initUserInterface`) | não integrado (exigiria mais cola) |
+| Risco em upgrade do The-Forge | baixo (APIs públicas) | médio (externs podem sumir/mudar — refazer a cola) |
+| Fidelidade à arquitetura | cengine é convidada do framework | The-Forge é detalhe atrás do port `IWindowManager` |
+
+**Recomendação — modo padrão: fase 2 (biblioteca).** É a que cumpre a visão
+do projeto (cengine no comando, plataforma intercambiável — o `main()` é
+idêntico ao do FTXUI) e o custo real da cola ficou baixo e localizado (5
+externs documentados num único .cpp). O modo hospedado continua sendo a
+escolha certa quando o jogo precisar do que o framework dá de graça —
+fullscreen/device lost robustos ou UI middleware (imgui) — ou para minimizar
+manutenção sob upgrades frequentes do The-Forge. Os dois cascos coexistem no
+repo e compilam as mesmas cenas, então a decisão é por projeto, não
+definitiva.
 
 ## Riscos
 
