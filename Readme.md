@@ -6,17 +6,19 @@ Um jogo de quebra-cabeça deslizante (sliding puzzle) 3x3 implementado em C++ co
 
 Este projeto utiliza o CMake como sistema de build e é dividido em múltiplos módulos, com uma separação clara entre domínio, infraestrutura e interface. O foco é manter a lógica de negócio desacoplada da plataforma.
 
-O game loop é da engine [cengine](https://github.com/mrmarmitt/cengine) (consumida via FetchContent); o domínio do jogo (tabuleiro, partidas, recordes) é compartilhado por **três interfaces**, cada uma vivendo em `src/platform/`:
+O game loop é da engine [cengine](https://github.com/mrmarmitt/cengine) (consumida via FetchContent); o domínio do jogo (tabuleiro, partidas, recordes) é compartilhado por **três interfaces** (quatro executáveis), cada uma vivendo em `src/platform/`:
 
 | Executável | Interface | Descrição |
 |------------|-----------|-----------|
 | `8Puzzle.exe` | Terminal clássico | Saída via `std::cout`, input bloqueante (`_getch`) — a versão original de estudo |
 | `8PuzzleFtxui.exe` | [FTXUI](https://github.com/ArthurSonzogni/FTXUI) | Tabuleiro desenhado com bordas e cores, menu navegável, cronômetro ao vivo a ~60 FPS, input não-bloqueante |
-| `8PuzzleForge.exe` | [The-Forge](https://github.com/ConfettiFX/The-Forge) | Janela gráfica de verdade (D3D12): texto renderizado na GPU, engine em modo hospedado (`frame(dt)`) — build separado, via MSBuild |
+| `8PuzzleForge.exe` | [The-Forge](https://github.com/ConfettiFX/The-Forge) | Janela gráfica de verdade (D3D12), **modo hospedado**: o framework (`IApp`) é dono do loop e chama `EngineManager::frame(dt)` — build separado, via MSBuild |
+| `8PuzzleForgeLib.exe` | [The-Forge](https://github.com/ConfettiFX/The-Forge) | Mesma janela D3D12, **modo biblioteca**: a cengine é dona do loop (`EngineManager::start()`) e o The-Forge entra só como motor gráfico — build separado, via MSBuild |
 
 ### Funcionalidades:
 
-- Arquitetura hexagonal — mesmo domínio, três plataformas de UI
+- Arquitetura hexagonal — mesmo domínio, três plataformas de UI (e as
+  **mesmas cenas The-Forge em dois cascos**: hospedado e biblioteca)
 - Tabuleiro embaralhado a cada partida (sempre solucionável)
 - Recordes (top 10 por tempo ou movimentos) **persistidos em `records.tsv`** (mesmo formato TSV em todas as interfaces; o arquivo é criado no diretório de onde o jogo roda)
 - Suporte a testes com GoogleTest
@@ -43,11 +45,16 @@ O alvo é controlado pela opção CMake `PUZZLE_BUILD_FTXUI` (default `ON`); o F
 
 ---
 
-## Interface The-Forge (8PuzzleForge)
+## Interface The-Forge (8PuzzleForge e 8PuzzleForgeLib)
 
 O mesmo jogo numa **plataforma gráfica de verdade**: janela nativa com renderização D3D12 via [The-Forge](https://github.com/ConfettiFX/The-Forge) v1.63. Os controles são os mesmos da interface FTXUI (tabela acima).
 
-A arquitetura é o resultado da PoC documentada em [`.ai/task/01-theforge-poc.md`](.ai/task/01-theforge-poc.md): o The-Forge é dono do loop (framework `IApp`), e a cengine roda em **modo hospedado** — o `Draw()` do app chama `EngineManager::frame(dt)` (cengine 0.4.0), que executa o quadro completo com fixed timestep. Domínio, serviços e máquina de estados são os mesmos arquivos das outras plataformas, compilados sem alteração; a camada da plataforma vive em `src/platform/theforge/src/8PuzzleForge/` (`ForgeUi` = fila de teclado + desenho de texto; cenas em `scene/`).
+São **dois executáveis com as mesmas cenas** (`src/platform/theforge/src/8PuzzleForge/scene/`, que falam com a plataforma só através do `ForgeUi` — fila de teclado + desenho de texto), diferindo apenas no casco, ou seja, em **quem é dono do game loop**:
+
+- **`8PuzzleForge` — modo hospedado** (PoC fase 1, [`.ai/task/01-theforge-poc.md`](.ai/task/01-theforge-poc.md)): o The-Forge é dono do loop (framework `IApp` + `DEFINE_APPLICATION_MAIN`), e a cengine roda hospedada — o `Draw()` do app chama `EngineManager::frame(dt)` (cengine 0.4.0), que executa o quadro completo com fixed timestep. Janela, input e resize vêm de graça do framework.
+- **`8PuzzleForgeLib` — modo biblioteca** (PoC fase 2, [`.ai/task/02-theforge-fase2-library-mode.md`](.ai/task/02-theforge-fase2-library-mode.md)): a **cengine é dona do loop** — um `main()` com a mesma fiação do `main_ftxui.cpp` chama `EngineManager::start()`, e todo o boilerplate de janela/GPU (janela Win32 própria, WndProc alimentando a fila do `ForgeUi`, swapchain, resize) vive no `TheForgeWindowManager : IWindowManager`, sobre o par `update()`/`present()` da cengine 0.5.0. O The-Forge vira só o motor gráfico, sem `IApp`/WindowsMain. É o **modo recomendado** pela PoC (registro comparativo na task 02); o hospedado permanece como referência de quando o framework precisa estar no comando (fullscreen/device lost robustos, UI middleware).
+
+Domínio, serviços e máquina de estados são os mesmos arquivos das outras plataformas, compilados sem alteração nos dois cascos.
 
 ### Pré-requisitos (além dos gerais)
 
@@ -56,7 +63,7 @@ Este alvo **não** faz parte do build CMake — é um `.vcxproj` (MSBuild), porq
 ```
 <workspace>/
 ├── 8puzzle/      # este repo
-├── cengine/      # checkout na mesma versão do FetchContent (tag 0.4.0)
+├── cengine/      # checkout na mesma versão do FetchContent (tag 0.5.0)
 └── The-Forge/    # v1.63, com assets baixados (PRE_BUILD.bat)
 ```
 
@@ -67,12 +74,16 @@ Este alvo **não** faz parte do build CMake — é um `.vcxproj` (MSBuild), porq
 ### Build
 
 ```powershell
+# modo hospedado (fase 1)
 MSBuild src\platform\theforge\PC_VS2019\8PuzzleForge.vcxproj /p:Configuration=Release /p:Platform=x64
+
+# modo biblioteca (fase 2 — recomendado)
+MSBuild src\platform\theforge\PC_VS2019\8PuzzleForgeLib.vcxproj /p:Configuration=Release /p:Platform=x64
 ```
 
-O executável e todos os artefatos (shaders compilados, DLLs de runtime, configs) saem em `out/theforge/x64/Release/8PuzzleForge/8PuzzleForge.exe`. O passo FSL compila as root signatures por-app; o `PathStatement.txt` próprio resolve fontes/texturas na árvore do The-Forge irmão.
+O executável e todos os artefatos (shaders compilados, DLLs de runtime, configs) saem em `out/theforge/x64/Release/<Projeto>/<Projeto>.exe`. O passo FSL compila as root signatures por-app; o `PathStatement.txt` próprio resolve fontes/texturas na árvore do The-Forge irmão.
 
-> Também existem na mesma pasta os projetos `HelloForge.vcxproj` e `CengineAdapter.vcxproj` — degraus 1 e 2 da PoC, mantidos como referência mínima de boilerplate e de integração cengine↔IApp.
+> Também existem na mesma pasta os projetos `HelloForge.vcxproj` e `CengineAdapter.vcxproj` (degraus 1 e 2 da fase 1 — boilerplate mínimo e integração cengine↔IApp) e `ForgeLibSpike.vcxproj` (degraus 0-2 da fase 2 — renderer sem IApp, fontes/input próprios e a cengine assumindo o loop com cenas de teste). São mantidos como referência.
 
 ---
 
@@ -111,8 +122,8 @@ Para gerar um executável do projeto 8Puzzle, você pode seguir os passos abaixo
    - `8Puzzle.exe` — interface terminal clássica
    - `8PuzzleFtxui.exe` — interface FTXUI
 
-   > O `8PuzzleForge.exe` (The-Forge) não é um alvo CMake — ver a seção
-   > [Interface The-Forge](#interface-the-forge-8puzzleforge) para o build via MSBuild.
+   > O `8PuzzleForge.exe` e o `8PuzzleForgeLib.exe` (The-Forge) não são alvos CMake — ver a seção
+   > [Interface The-Forge](#interface-the-forge-8puzzleforge-e-8puzzleforgelib) para o build via MSBuild.
 
 > Os presets versionados usam o compilador MSVC (`cl.exe`). Para outro
 > toolchain (ex.: MinGW/MSYS2), crie um preset de máquina em um
