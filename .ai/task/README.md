@@ -1,7 +1,7 @@
 # Plano de trabalho — 8Puzzle
 
 Tasks do projeto, no mesmo formato do plano da
-[cengine](https://github.com/mrmarmitt/cengine) (`.ai/task/`): um arquivo por
+[cengine](https://github.com/cengine-dev/cengine) (`.ai/task/`): um arquivo por
 task, com contexto, degraus e critérios de aceite. Status:
 `todo` → `in-progress` → `done`.
 

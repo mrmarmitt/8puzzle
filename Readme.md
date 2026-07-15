@@ -6,7 +6,7 @@ Um jogo de quebra-cabeça deslizante (sliding puzzle) 3x3 implementado em C++ co
 
 Este projeto utiliza o CMake como sistema de build e é dividido em múltiplos módulos, com uma separação clara entre domínio, infraestrutura e interface. O foco é manter a lógica de negócio desacoplada da plataforma.
 
-O game loop é da engine [cengine](https://github.com/mrmarmitt/cengine) (consumida via FetchContent); o domínio do jogo (tabuleiro, partidas, recordes) é compartilhado por **três interfaces** (quatro executáveis), cada uma vivendo em `src/platform/`:
+O game loop é da engine [cengine](https://github.com/cengine-dev/cengine) (consumida via FetchContent); o domínio do jogo (tabuleiro, partidas, recordes) é compartilhado por **três interfaces** (quatro executáveis), cada uma vivendo em `src/platform/`:
 
 | Executável | Interface | Descrição |
 |------------|-----------|-----------|
